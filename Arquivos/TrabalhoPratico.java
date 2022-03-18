@@ -1,76 +1,60 @@
-//    > Arquivo: 'TrabalhoPratico.java'
-//    > Autores: Pedro Igor Martins dos Reis & Hermane Veloso
-//    > Data: 27/02/2022
-//    > Disciplina: AEDIII | Engenharia de Computação
+package trabalhopraticoI;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
-public class TrabalhoPratico
+public class TrabalhoPratico 
 {
-    private static void imprimirMenuInicial()
-    {
-        System.out.printf("\n");
-        System.out.printf("\t.---------------------------------------.\n");
-        System.out.printf("\t|               No bolso!               |\n");
-        System.out.printf("\t|---------------------------------------|\n");
-        System.out.printf("\t|       » Escolha uma das opções «      |\n");
-        System.out.printf("\t|---------------------------------------|\n");
-        System.out.printf("\t| 1 - Criar uma nova conta              |\n");
-        System.out.printf("\t| 2 - Acessar sua conta                 |\n");
-        System.out.printf("\t| 3 - Sair                              |\n");
-        System.out.printf("\t'---------------------------------------'\n");
-        System.out.printf("\n");
-    }
-
-    private static void imprimirMenuPrincipal()
-    {
-        System.out.printf("\n");
-        System.out.printf("\n");
-    }
-
-    public static void main(String[] args) 
-    {
-        Scanner in = new Scanner(System.in);
-        imprimirMenuInicial();
-        byte opcaoMenu = in.nextByte();
-        switch(opcaoMenu)
-        {
-            case 1:
-            {
-                break;
-            }
-
-            case 2:
-            {
-                System.out.printf("\n");
-                System.out.printf("\t.------------------------.\n");
-                System.out.printf("\t|     Acesso a conta     |\n");
-                System.out.printf("\t'------------------------'\n");
-                System.out.printf("\n");
-                System.out.printf("Por gentileza, informe sua agência: ");
-                byte auxAgencia = in.nextByte();
-                System.out.printf("Agora, informe sua conta: ");
-                byte auxConta = in.nextByte();
-                System.out.printf("Por fim, informe sua senha: ");
-                byte auxSenha = in.nextByte();
-                break;
-            }
-
-            case 3:
-            {
-                break;
-            }
-
-            default:
-            {
-                System.out.printf("\n");
-                System.out.printf("\t.-----------------------.\n");
-                System.out.printf("\t| Erro, opção inválida. |\n");
-                System.out.printf("\t'-----------------------'\n");
-                System.out.printf("\n");
-                break;
-            }
-        }
-        in.close();
-    }
+	static ArrayList<Conta> contasBancarias;
+	static Scanner in = new Scanner (System.in);
+	
+	public static void main (String [] args)
+	{
+		contasBancarias = new ArrayList<Conta>();
+		
+		Menus.menuInicial();
+		byte opcao = in.nextByte();
+		do
+		{
+			switch(opcao)
+			{
+				case 1:
+				{
+					FuncoesBancarias.novaConta();
+					break;
+				}
+				case 2:
+				{
+					FuncoesBancarias.deposito();
+					break;
+				}
+				case 3:
+				{
+					FuncoesBancarias.saque();
+					break;
+				}
+				case 4:
+				{
+					FuncoesBancarias.transferencia();
+					break;
+				}
+				case 5:
+				{
+					FuncoesBancarias.listarContas();
+					break;
+				}
+				case 6:
+				{
+					System.out.println("Encerrando...");
+					System.exit(0);
+				}
+				default:
+				{
+					System.out.println("Opção inválida.");
+					break;
+				}
+			}
+		}
+		while(opcao != 6);
+	}
 }
