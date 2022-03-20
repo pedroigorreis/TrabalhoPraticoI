@@ -1,4 +1,4 @@
-package trabalhopraticoI;
+package trabalhoPraticoI;
 
 import java.util.Scanner;
 
@@ -20,6 +20,7 @@ public class FuncoesBancarias
         TrabalhoPratico.contasBancarias.add(conta);
 
         System.out.printf("\tConta aberta com sucesso!\n");
+        TrabalhoPratico.main(null);
     }
     
     public static Conta encontrarConta(int idConta)
@@ -56,6 +57,7 @@ public class FuncoesBancarias
         {
             System.out.printf("\tErro, conta inválida.\n");
         }
+        TrabalhoPratico.main(null);
     }
     public static void saque()
     {
@@ -73,6 +75,7 @@ public class FuncoesBancarias
         {
             System.out.printf("\tErro, conta inválida.\n");
         }
+        TrabalhoPratico.main(null);
     }
 
     public static void transferencia()
@@ -101,6 +104,7 @@ public class FuncoesBancarias
                 System.out.printf("\nConta não encontrada!\n");
             }
         }
+        TrabalhoPratico.main(null);
     }
     public static void listarContas()
     {
@@ -115,5 +119,6 @@ public class FuncoesBancarias
         {
             System.out.printf("\tNenhuma conta cadastrada!\n");
         }
+        TrabalhoPratico.main(null);
     }
 }

@@ -1,4 +1,4 @@
-package trabalhopraticoI;
+package trabalhoPraticoI;
 
 import java.util.Scanner;
 import java.util.ArrayList;

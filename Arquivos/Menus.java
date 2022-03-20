@@ -3,7 +3,7 @@
 //    > Disciplina: AEDIII | Engenharia de Computação
 //    > Autores: Pedro Igor Martins dos Reis & Hermane Veloso
 
-package trabalhopraticoI;
+package trabalhoPraticoI;
 
 public class Menus
 {

@@ -1,17 +1,17 @@
-package trabalhopraticoI;
+package trabalhoPraticoI;
 
 public class Conta 
 {
     private int idConta;
     private Usuario usuario;
-    private float saldo = (float) 0.0;
+    private float saldo = 0;
     private static int contadorContas = 1;
 
     public Conta (Usuario usuario)
     {
-        contadorContas += 1;
         this.usuario = usuario;
         this.idConta = contadorContas;
+        contadorContas += 1;
     }
 
     public float getSaldo() { return saldo; }
@@ -24,10 +24,10 @@ public class Conta
 
     public String toString()
     {
-        return "\nNúmero da conta:\t " + this.getIdConta() 
-        		+ "\nNome completo:\t " + this.usuario.getNome() 
-        		+ "\nCPF:\t " + this.usuario.getCpf() 
-        		+ "\nSaldo:\t " + ConversorReal.floatParaString(this.getSaldo()) + "\n";
+        return "\n\tNúmero da conta:\t " + this.getIdConta() 
+        		+ "\n\tNome completo:\t " + this.usuario.getNome() 
+        		+ "\n\tCPF:\t " + this.usuario.getCpf() 
+        		+ "\n\tSaldo:\t " + ConversorReal.floatParaString(this.getSaldo()) + "\n";
     }
 
     public void depositar(float valorSaldo)
