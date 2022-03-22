@@ -4,12 +4,10 @@ public class Usuario
 {
     private String cpf;
     private String nome;
-    private static int contador = 1;
     public Usuario (String cpf, String nome)
     {
         this.cpf = cpf;
         this.nome = nome;
-        contador += 1;
     }
 
     public String getCpf() { return cpf; }

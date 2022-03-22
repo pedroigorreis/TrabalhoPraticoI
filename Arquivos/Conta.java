@@ -24,10 +24,10 @@ public class Conta
 
     public String toString()
     {
-        return "\n\tNúmero da conta:\t " + this.getIdConta() 
-        		+ "\n\tNome completo:\t " + this.usuario.getNome() 
-        		+ "\n\tCPF:\t " + this.usuario.getCpf() 
-        		+ "\n\tSaldo:\t " + ConversorReal.floatParaString(this.getSaldo()) + "\n";
+        return "\n\tNúmero da conta: " + this.getIdConta() 
+        		+ "\n\tNome completo: " + this.usuario.getNome() 
+        		+ "\n\tCPF: " + this.usuario.getCpf() 
+        		+ "\n\tSaldo: " + ConversorReal.floatParaString(this.getSaldo()) + "\n";
     }
 
     public void depositar(float valorSaldo)
@@ -35,7 +35,7 @@ public class Conta
         if(valorSaldo > 0)
         {
             setSaldo(getSaldo() + valorSaldo);
-            System.out.printf("\tDepósito realido com sucesso.\n");
+            System.out.printf("\tDepósito realizado com sucesso.\n");
         }
         else
         {

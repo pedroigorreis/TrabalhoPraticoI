@@ -1,14 +1,9 @@
-//    > Data: 27/02/2022
-//    > Arquivo: 'Menus.java'
-//    > Disciplina: AEDIII | Engenharia de Computação
-//    > Autores: Pedro Igor Martins dos Reis & Hermane Veloso
-
 package trabalhoPraticoI;
 
-public class Menus
+public class Menus 
 {
-    static void menuInicial()
-    {
+	public static void menuInicial()
+	{
         System.out.printf("\n");
         System.out.printf("\t.---------------------------------------.\n");
         System.out.printf("\t|               No bolso!               |\n");
@@ -23,5 +18,32 @@ public class Menus
         System.out.printf("\t| 6 - Sair                              |\n");
         System.out.printf("\t'---------------------------------------'\n");
         System.out.printf("\n");
-    }
+	}
+	
+	public static void menuDeposito()
+	{
+		System.out.printf("\n");
+        System.out.printf("\t.----------------------.\n");
+        System.out.printf("\t|       Depósito       |\n");
+        System.out.printf("\t'----------------------'\n");
+        System.out.printf("\n");
+	}
+	
+	public static void menuSaque()
+	{
+		System.out.printf("\n");
+        System.out.printf("\t.---------------.\n");
+        System.out.printf("\t|     Saque     |\n");
+        System.out.printf("\t'---------------'\n");
+        System.out.printf("\n");
+	}
+	
+	public static void menuTransferencia()
+	{
+		System.out.printf("\n");
+        System.out.printf("\t.---------------------------.\n");
+        System.out.printf("\t|       Transferência       |\n");
+        System.out.printf("\t'---------------------------'\n");
+        System.out.printf("\n");
+	}
 }
