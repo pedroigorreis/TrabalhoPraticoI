@@ -1,13 +1,13 @@
 package trabalhoPraticoI;
 
-import java.util.Scanner;
+import java.util.*;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class FuncoesBancarias 
+public class FuncoesBancarias // Módulo das opções possíveis do projeto.
 {
-	public void buscar(int id, RandomAccessFile RAF) throws IOException
+	public void buscar(int id, RandomAccessFile RAF) throws IOException // Busca conta bancária no arquivo lido.
 	{
 		byte lapide;
 		byte byteArray[];
@@ -47,11 +47,11 @@ public class FuncoesBancarias
 			System.out.printf("\tConta não encontrada.\n");
 		}
 	}
+	// ... Que por sua vez retorna ao usuário caso não tenha sido encontrada / não existe.
 	
-	public static void cadastro(RandomAccessFile RAF) throws IOException
+	public static void cadastro(RandomAccessFile RAF) throws IOException // Cadastro da conta na última linha do arquivo.
 	{
 		Scanner in = new Scanner(System.in);
-
 		Menus.menuNovaConta();
 		
 		System.out.printf("\n\tCPF: ");
@@ -81,11 +81,12 @@ public class FuncoesBancarias
 		
 		System.out.print(C.toString());
 		System.out.printf("\tConta %d aberta com sucesso!\n",C.idConta);
-		in.close();
+
 		RAF.close();
+		in.close();
 	}
 	
-	public static void atualizar(RandomAccessFile RAF) throws IOException 
+	public static void atualizar(RandomAccessFile RAF) throws IOException  // Correção / Edição / Atualização dos dados cadastrais.
 	{
 		Menus.menuAtualizacao();
 		
@@ -124,7 +125,7 @@ public class FuncoesBancarias
 						RAF.seek(posicao);
 						RAF.readByte();
 						RAF.readInt();
-						RAF.write(byteArray);
+						RAF.write(byteArray);						
 					}
 					else
 					{
@@ -150,7 +151,7 @@ public class FuncoesBancarias
 		if(confirma == false) { System.out.printf("\n\tConta não encontrada.\n"); }
 		in.close();
 	}
-	public static void deletar(RandomAccessFile RAF) throws IOException 
+	public static void deletar(RandomAccessFile RAF) throws IOException // Método para excluir conta bancária do registro.
 	{
 		Menus.menuDeletarConta();
 		Scanner in = new Scanner(System.in);
@@ -185,9 +186,9 @@ public class FuncoesBancarias
 					break;
 				}
 			}
-			catch (Exception e) 
+			catch (EOFException err) 
 			{
-				e.printStackTrace();
+				err.printStackTrace();
 				break;
 			}
 		}
@@ -198,10 +199,9 @@ public class FuncoesBancarias
 		in.close();
 	}
 	
-	public static void transferencia(RandomAccessFile RAF) throws IOException
+	public static void transferencia(RandomAccessFile RAF) throws IOException // Transferência de valores entre contas cadastradas.
 	{
 		Menus.menuTransferencia();
-		
 		
 		// Variáveis necessárias.
 		byte lapide;
@@ -253,9 +253,9 @@ public class FuncoesBancarias
 				else
 				{
 					X.saldo = (X.saldo - valor);
-					X.transferenciasRealizadas = (short) (X.transferenciasRealizadas + 1);
+					X.transferenciasRealizadas++;
 					Z.saldo = (Z.saldo - valor);
-					Z.transferenciasRealizadas = (short) (Z.transferenciasRealizadas + 1);
+					Z.transferenciasRealizadas++;
 					
 					RAF.seek(posicaoRem);
 					RAF.write(X.toByteArray());
@@ -263,8 +263,16 @@ public class FuncoesBancarias
 					RAF.write(Z.toByteArray());
 				}
 			}
-			catch (EOFException err) { break; }
+			catch (EOFException err) 
+			{ 
+				err.printStackTrace();
+				break; 
+			}
 		}
 		in.close();
 	}
+	
+	// Com execessão do método de cadastro, todos realizam uma busca pela conta
+	// no registro, dependendo somente do ID, esta que por sua vez é gerada aleatoriamente
+	// entre 1000 a 9999.
 }

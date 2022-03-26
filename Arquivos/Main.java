@@ -1,12 +1,15 @@
 package trabalhoPraticoI;
 
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Scanner;
 
 public class Main 
 {
-	public static void main(String[] args) throws IOException 
+	public static void main(String[] args)
+	// O 'main' apenas recebe qual opção o usuário
+	// deseja (pelo byte "opcao") e o redireciona 
+	// para o seriço desejadao, porém sua principal
+	// funcionalidade é no controle do arquivo criado.
 	{
 		Scanner in = new Scanner(System.in);
 		try
@@ -15,11 +18,14 @@ public class Main
 			RAF.setLength(0);
 			RAF.writeInt(0);
 			
-			int opcao = 0;
+			byte opcao = 0;
 			do
 			{
 				Menus.menuInicial();
-				opcao = in.nextInt();
+				
+				opcao = in.nextByte();
+				in.nextLine();
+				
 				switch(opcao)
 				{
 					case 1:

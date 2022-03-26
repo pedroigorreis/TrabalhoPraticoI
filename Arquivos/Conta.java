@@ -6,7 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class Conta 
+public class Conta // Definição do objeto 'Conta' e suas características.
 {
 	protected String cpf;
 	protected int idConta;
@@ -14,7 +14,7 @@ public class Conta
 	protected float saldo = 0F;
 	protected String nomePessoa;
 	protected short transferenciasRealizadas = 0;
-	
+    
 	public Conta() // Conta genérica para preenchimento.
 	{
 		this.cpf = "";
@@ -34,9 +34,9 @@ public class Conta
 		this.transferenciasRealizadas = 0;
 	}
 	
-    public String toString()
+    public String toString() // Formatação para impressão.
     {
-        	return "\n\t.-----------------------. "
+        return "\n\t.-----------------------. "
         	 + "\n\t| Número da conta       | " + idConta
         	 + "\n\t| Nome completo         | " + nomePessoa
         	 + "\n\t| Cidade                | " + cidade
@@ -47,7 +47,7 @@ public class Conta
         	 + "\n";
     }
     
-    public byte[] toByteArray() throws IOException
+    public byte[] toByteArray() throws IOException // Converter para vetor de Bytes.
     {
     	ByteArrayOutputStream gerador = new ByteArrayOutputStream();
     	DataOutputStream DOS = new DataOutputStream(gerador);
@@ -62,7 +62,7 @@ public class Conta
         return gerador.toByteArray();
     }
     
-    public void fromByteArray(byte[] byteContas) throws IOException
+    public void fromByteArray(byte[] byteContas) throws IOException // Converter para informações legíveis.
     {
     	ByteArrayInputStream leitor = new ByteArrayInputStream(byteContas);
     	DataInputStream DIS = new DataInputStream(leitor);
