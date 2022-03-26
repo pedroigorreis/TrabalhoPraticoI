@@ -1,26 +1,40 @@
 package trabalhoPraticoI;
 
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class TrabalhoPratico 
 {
 	static ArrayList<Conta> contasBancarias;
 	static Scanner in = new Scanner (System.in);
+
+	public class ManipulaArquivo 
+	{
+		public static RandomAccessFile inicializacao() throws IOException
+		{
+			RandomAccessFile controle = new RandomAccessFile("dados.db", "rw");
+			return controle;
+		}
+	}
 	
 	public static void novaConta()
     {
         System.out.printf("\n\tNome completo: ");
-        String nome = in.next();
+        String nome = in.nextLine();
 
         System.out.printf("\tCPF: ");
-        String cpf = in.next();
+        String cpf = in.nextLine();
 
-        Usuario usuario = new Usuario(cpf, nome);
-        Conta conta = new Conta(usuario);
+        System.out.printf("\tCidade: ");
+        String cidade = in.nextLine();
+        
+        Usuario usuario = new Usuario(cpf, nome, cidade);
+        Conta C = new Conta(usuario);
         
         contasBancarias.add(conta);
-        System.out.printf("\tConta aberta com sucesso!\n");
+        System.out.printf("\tConta "+ aberta com sucesso!\n");
         funcoesBancarias();
     }
     
@@ -95,7 +109,7 @@ public class TrabalhoPratico
 
             if(contaDestinataria != null)
             {
-                System.out.printf("\tValor da transferência: ");
+                System.out.printf("\tValor da transferência: R$ ");
                 float valor = in.nextFloat();
 
                 contaRemetente.transferir(contaDestinataria, valor);
@@ -156,6 +170,14 @@ public class TrabalhoPratico
 				break;
 			}
 			case 6:
+			{
+				break;
+			}
+			case 7:
+			{
+				break;
+			}
+			case 8:
 			{
 				System.out.printf("\n\tFim.\n");
 				System.exit(0);
