@@ -13,22 +13,22 @@ int main(void)
 
         switch(inst)
         {
-            case 1:  { criarConta(); break; }
-            case 2:  { break; }
-            case 3:  { break; }
-            case 4:  { break; }
-            case 5:  { imprimirContas(); break; }
+            case 1:  { system("clear"); criarConta(); break; }
+            case 2:  { system("clear"); atualizarConta(); break; }
+            case 3:  { system("clear"); realizarTransferencia(); break; }
+            case 4:  { system("clear"); break; }
+            case 5:  { system("clear"); imprimirContas(); break; }
             case 6:
             {
                 int idTemp = 0;
                 printf("\n\tDigite o ID da conta para buscar: ");
                 scanf("%d", &idTemp);
-                if(buscarConta(idTemp) != -1) { printf("\n\tConta encontrada com sucesso.\n"); }
-                else { printf("\n\tConta não encontrada no sistema.\n"); }
+                if(buscarConta(idTemp) != -1) { printf("\n\t⨀ Conta encontrada com sucesso.\n"); }
+                else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
                 break;
             }
             case 7:  { depositar(); break; }
-            case 8:  { break; }
+            case 8:  { sacar(); break; }
             case 9:  { printf("\n\tFim\n"); break; }
             default: { printf("\n\tOpção inválida."); break; }
         }

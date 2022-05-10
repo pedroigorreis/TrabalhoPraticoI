@@ -22,8 +22,9 @@ void imprimirMenuPrincipal();
 
 void criarConta();
 void depositar();
+void sacar();
 int buscarConta(int id);
-void atualizarConta(Conta C);
-void realizarTransferencia(Conta A, Conta B, float valor);
+void atualizarConta();
+void realizarTransferencia();
 
 #endif
