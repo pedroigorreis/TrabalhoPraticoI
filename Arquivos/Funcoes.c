@@ -42,7 +42,9 @@ void criarConta()
     Conta C;
     FILE *Dados = fopen("Contas.bin", "ab");
 
-    printf("\n\t\t⤽ Criar conta\n");
+    printf("\n\t┏━━━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃    Criar conta    ┃");
+    printf("\n\t┗━━━━━━━━━━━━━━━━━━━┛\n");
 
     printf("\n\tNome: ");   scanf("%[^\n]s", C.nomePessoa); fgetc(stdin);
     printf("\n\tCPF: ");    scanf("%[^\n]s", C.CPF);        fgetc(stdin);
@@ -52,8 +54,8 @@ void criarConta()
     C.idConta = (ftell(Dados) / 88) + 1;
     C.transferenciasRealizadas = 0;
 
-    fwrite(&C.idConta, sizeof(int),1,Dados);        // 0
-    fwrite(&C.nomePessoa,sizeof(char),33,Dados);    // 4
+    fwrite(&C.idConta, sizeof(int),1,Dados);
+    fwrite(&C.nomePessoa,sizeof(char),33,Dados);
     fwrite(&C.CPF,sizeof(char),12,Dados);
     fwrite(&C.cidade,sizeof(char),31,Dados);
     printf("%ld\n", ftell(Dados));
@@ -122,6 +124,10 @@ int buscarConta(int id)
 
 void depositar()
 {
+    printf("\n\t┏━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃    Depositar    ┃");
+    printf("\n\t┗━━━━━━━━━━━━━━━━━┛\n");
+
     printf("\n\tDigite o ID da conta desejada: ");
     int idTemporario = 0;
     scanf("%d", &idTemporario);
@@ -129,7 +135,7 @@ void depositar()
 
     if(posicao != -1)
     {
-        printf("\n\t֍ Buscando contas...\n");
+        printf("\n\t⅏ Buscando contas...\n");
         printf("\n\t⨀ Conta encontrada com sucesso.\n");
 
         FILE *Dados = fopen("Contas.bin", "rb+");
@@ -155,6 +161,10 @@ void depositar()
 
 void atualizarConta()
 {
+    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃    Atualizar Conta    ┃");
+    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+
     printf("\n\tDigite o ID da conta desejada: ");
     int idTemporario = 0;
     scanf("%d", &idTemporario); fgetc(stdin);
@@ -162,7 +172,7 @@ void atualizarConta()
 
     if(posicao != -1)
     {
-        printf("\n\t֍ Buscando conta...\n");
+        printf("\n\t⅏ Buscando conta...\n");
         printf("\n\t⨀ Conta encontrada com sucesso.\n");
 
         FILE *Dados = fopen("Contas.bin", "rb+");
@@ -188,6 +198,10 @@ void atualizarConta()
 
 void sacar()
 {
+    printf("\n\t┏━━━━━━━━━━━━━┓");
+    printf("\n\t┃    Saque    ┃");
+    printf("\n\t┗━━━━━━━━━━━━━┛\n");
+
     printf("\n\tDigite o ID da conta desejada: ");
     int idTemporario = 0;
     scanf("%d", &idTemporario);
@@ -195,7 +209,7 @@ void sacar()
 
     if(posicao != -1)
     {
-        printf("\n\t֍ Buscando conta...\n");
+        printf("\n\t⅏ Buscando conta...\n");
         printf("\n\t⨀ Conta encontrada com sucesso.\n");
 
         FILE *Dados = fopen("Contas.bin", "rb+");
@@ -228,6 +242,10 @@ void sacar()
 
 void realizarTransferencia()
 {
+    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃    Realizar transferências    ┃");
+    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+
     int idRem = -1;
     int idDes = -1;
     printf("\n\tDigite o ID da conta remetente: ");
@@ -238,7 +256,7 @@ void realizarTransferencia()
     int posicaoR = buscarConta(idRem);
     int posicaoD = buscarConta(idDes);
 
-    printf("\n\t֍ Buscando contas...\n");
+    printf("\n\t⅏ Buscando contas...\n");
 
     if(posicaoD != -1 && posicaoR != -1)
     {
@@ -256,23 +274,25 @@ void realizarTransferencia()
 
             fseek(Dados,(posicaoR - 8),SEEK_SET);
             fread(&remetente.saldo,sizeof(float),1,Dados);
+            fread(&remetente.transferenciasRealizadas,sizeof(int),1,Dados);
 
             fseek(Dados,(posicaoD - 8),SEEK_SET);
             fread(&destinataria.saldo,sizeof(float),1,Dados);
+            fread(&destinataria.transferenciasRealizadas,sizeof(int),1,Dados);
 
-            if(saldoTemporario > remetente.saldo)
-            {
-                printf("\n\tErro, valor insuficiente para a operação.\n");
-            }
+            if(saldoTemporario > remetente.saldo) { printf("\n\tErro, valor insuficiente para a operação.\n"); }
             else
             {
                 remetente.saldo -= saldoTemporario;
                 destinataria.saldo += saldoTemporario;
+                remetente.transferenciasRealizadas++;
+                destinataria.transferenciasRealizadas++;
                 fseek(Dados,(posicaoR - 8),SEEK_SET);
                 fwrite(&remetente.saldo,sizeof(float),1,Dados);
+                fwrite(&remetente.transferenciasRealizadas,sizeof(int),1,Dados);
                 fseek(Dados,(posicaoD - 8),SEEK_SET);
                 fwrite(&destinataria.saldo,sizeof(float),1,Dados);
-
+                fwrite(&destinataria.transferenciasRealizadas,sizeof(int),1,Dados);
                 printf("\n\t⤮ Transferência realizada com sucesso.\n");
             }
         }
@@ -280,4 +300,53 @@ void realizarTransferencia()
         fclose(Dados);
     }
     else { printf("\n\t⨂ Contas não encontradas no sistema.\n"); }
+}
+
+void deletarConta()
+{
+    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃    Deletar conta    ┃");
+    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━┛\n");
+
+    printf("\n\tDigite o ID da conta desejada: ");
+    int idTemporario = 0;
+    scanf("%d", &idTemporario);
+
+    int posicao = buscarConta(idTemporario);
+
+    if(posicao != -1)
+    {
+        printf("\n\t⅏ Buscando conta...\n");
+        printf("\n\t⨀ Conta encontrada com sucesso.\n");
+
+        FILE *Dados = fopen("Contas.bin", "rb+");
+        if(Dados != NULL)
+        {
+            fseek(Dados,(posicao - 88) + sizeof(int),SEEK_SET);
+
+            Conta C;
+            strcpy(C.CPF, "Removida");
+            strcpy(C.cidade, "Removida");
+            strcpy(C.nomePessoa, "Removida");
+            C.saldo = 0.0;
+            C.transferenciasRealizadas = 0;
+
+            fwrite(&C.nomePessoa,sizeof(char),33,Dados);
+            fwrite(&C.CPF,sizeof(char),12,Dados);
+            fwrite(&C.cidade,sizeof(char),31,Dados);
+            printf("%ld\n", ftell(Dados));
+            fwrite(&C.saldo,sizeof(float),1,Dados);
+            fwrite(&C.transferenciasRealizadas,sizeof(int),1,Dados);
+
+            printf("\n\t⊛ Conta removida com sucesso.\n");
+        }
+        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
+        fclose(Dados);
+    }
+    else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
+}
+
+void exportarIndices()
+{
+
 }

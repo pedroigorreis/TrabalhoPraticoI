@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 
 typedef struct Conta
@@ -20,11 +21,12 @@ void imprimirContas();
 void imprimirConta(Conta C);
 void imprimirMenuPrincipal();
 
-void criarConta();
-void depositar();
 void sacar();
-int buscarConta(int id);
+void depositar();
+void criarConta();
+void deletarConta();
 void atualizarConta();
+int buscarConta(int id);
 void realizarTransferencia();
 
 #endif
