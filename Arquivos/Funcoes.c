@@ -46,9 +46,17 @@ void criarConta()
     printf("\n\t┃    Criar conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━┛\n");
 
-    printf("\n\tNome: ");   scanf("%[^\n]s", C.nomePessoa); fgetc(stdin);
-    printf("\n\tCPF: ");    scanf("%[^\n]s", C.CPF);        fgetc(stdin);
-    printf("\n\tCidade: "); scanf("%[^\n]s", C.cidade);     fgetc(stdin);
+    printf("\n\tNome: ");
+    scanf("%[^\n]s", C.nomePessoa);
+    fgetc(stdin);
+
+    printf("\n\tCPF: ");
+    scanf("%[^\n]s", C.CPF);
+    fgetc(stdin);
+
+    printf("\n\tCidade: ");
+    scanf("%[^\n]s", C.cidade);
+    fgetc(stdin);
 
     C.saldo = 0.0;
     C.idConta = (ftell(Dados) / 88) + 1;
@@ -58,7 +66,6 @@ void criarConta()
     fwrite(&C.nomePessoa,sizeof(char),33,Dados);
     fwrite(&C.CPF,sizeof(char),12,Dados);
     fwrite(&C.cidade,sizeof(char),31,Dados);
-    printf("%ld\n", ftell(Dados));
     fwrite(&C.saldo,sizeof(float),1,Dados);
     fwrite(&C.transferenciasRealizadas,sizeof(int),1,Dados);
 
@@ -75,7 +82,7 @@ void imprimirContas()
         Conta C;
 
         printf("\n\t┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━┓");
-        printf("\n\t┃   ID  ┃            Nome Completo        ┃      CPF     ┃             Cidade              ┃  Saldo (R$)  ┃ Transf. ┃");
+        printf("\n\t┃  ID.  ┃          Nome Completo          ┃     CPF.     ┃             Cidade              ┃  Saldo (R$)  ┃ Transf. ┃");
         printf("\n\t┣━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━╋━━━━━━━━━┫");
         while
         (
@@ -90,10 +97,12 @@ void imprimirContas()
             printf("\n\t┃ %-5d ┃ %-31s ┃ %-12s ┃ %-31s ┃ %-12.2f ┃ %-7d ┃", C.idConta, C.nomePessoa, C.CPF,C.cidade, C.saldo,C.transferenciasRealizadas);
         }
         printf("\n\t┗━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━┛\n\n");
+        fclose(Dados);
     }
-    else { printf("\n\t⨂ Arquivo vazio.\n"); }
-
-    fclose(Dados);
+    else
+    {
+        printf("\n\t⨂ Arquivo não encontrada.\n");
+    }
 }
 
 int buscarConta(int id)
@@ -105,7 +114,6 @@ int buscarConta(int id)
 
     if(Dados != NULL)
     {
-        rewind(Dados);
         while
         (
             fread(&C.idConta, sizeof(int),1,Dados) != 0 &&
@@ -115,11 +123,19 @@ int buscarConta(int id)
             fread(&C.saldo,sizeof(float),1,Dados) != 0 &&
             fread(&C.transferenciasRealizadas,sizeof(int),1,Dados) != 0
         )
-        { if(C.idConta == id) { posicaoCursor = ftell(Dados); } }
+        {
+            if(C.idConta == id)
+            {
+                posicaoCursor = ftell(Dados);
+            }
+        }
+        fclose(Dados);
     }
-    else { printf("\n\t⨂ Arquivo vazio.\n"); }
+    else
+    {
+        printf("\n\t⨂ Arquivo não encontrado.\n");
+    }
     return posicaoCursor;
-    fclose(Dados);
 }
 
 void depositar()
@@ -153,10 +169,16 @@ void depositar()
             fwrite(&C.saldo,sizeof(float),1,Dados);
             printf("\n\t⥣ Depósito realizado com sucesso.\n");
         }
-        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
+        else
+        {
+            printf("\n\t⨂ Arquivo não encontrado.\n");
+        }
         fclose(Dados);
     }
-    else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
+    else
+    {
+        printf("\n\t⨂ Conta não encontrada no sistema.\n");
+    }
 }
 
 void atualizarConta()
@@ -190,10 +212,16 @@ void atualizarConta()
             fwrite(&C.CPF,sizeof(char),12,Dados);
             fwrite(&C.cidade,sizeof(char),31,Dados);
         }
-        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
+        else
+        {
+            printf("\n\t⨂ Arquivo não encontrado.\n");
+        }
         fclose(Dados);
     }
-    else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
+    else
+    {
+        printf("\n\t⨂ Conta não encontrada no sistema.\n");
+    }
 }
 
 void sacar()
@@ -280,7 +308,10 @@ void realizarTransferencia()
             fread(&destinataria.saldo,sizeof(float),1,Dados);
             fread(&destinataria.transferenciasRealizadas,sizeof(int),1,Dados);
 
-            if(saldoTemporario > remetente.saldo) { printf("\n\tErro, valor insuficiente para a operação.\n"); }
+            if(saldoTemporario > remetente.saldo)
+            {
+                printf("\n\tErro, valor insuficiente para a operação.\n");
+            }
             else
             {
                 remetente.saldo -= saldoTemporario;
@@ -296,10 +327,16 @@ void realizarTransferencia()
                 printf("\n\t⤮ Transferência realizada com sucesso.\n");
             }
         }
-        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
+        else
+        {
+            printf("\n\t⨂ Arquivo não encontrado.\n");
+        }
         fclose(Dados);
     }
-    else { printf("\n\t⨂ Contas não encontradas no sistema.\n"); }
+    else
+    {
+        printf("\n\t⨂ Contas não encontradas no sistema.\n");
+    }
 }
 
 void deletarConta()
@@ -340,13 +377,14 @@ void deletarConta()
 
             printf("\n\t⊛ Conta removida com sucesso.\n");
         }
-        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
+        else
+        {
+            printf("\n\t⨂ Arquivo não encontrado.\n");
+        }
         fclose(Dados);
     }
-    else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
-}
-
-void exportarIndices()
-{
-
+    else
+    {
+        printf("\n\t⨂ Conta não encontrada no sistema.\n");
+    }
 }
