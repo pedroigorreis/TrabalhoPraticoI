@@ -1,7 +1,5 @@
 #include "Bibliotecas.h"
 
-// Símbolos ┗ ┃ ┓ ┏ ┛ ━ ┣ ┫ ┳ ┻
-
 void imprimirConta(Conta C)
 {
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
@@ -62,6 +60,8 @@ void criarConta()
     C.idConta = (ftell(Dados) / 88) + 1;
     C.transferenciasRealizadas = 0;
 
+    adicionarIndices(C.idConta,ftell(Dados));
+
     fwrite(&C.idConta, sizeof(int),1,Dados);
     fwrite(&C.nomePessoa,sizeof(char),33,Dados);
     fwrite(&C.CPF,sizeof(char),12,Dados);
@@ -100,12 +100,10 @@ void imprimirContas()
         fclose(Dados);
     }
     else
-    {
-        printf("\n\t⨂ Arquivo não encontrada.\n");
-    }
+    { printf("\n\t⨂ Arquivo não encontrada.\n"); }
 }
 
-int buscarConta(int id)
+int buscaContaTradicional(int id)
 {
     Conta C;
     int posicaoCursor = -1;
@@ -116,25 +114,17 @@ int buscarConta(int id)
     {
         while
         (
-            fread(&C.idConta, sizeof(int),1,Dados) != 0 &&
+            fread(&C.idConta, sizeof(int),1,Dados) != -1 &&
             fread(&C.nomePessoa,sizeof(char),33,Dados) != 0 &&
             fread(&C.CPF,sizeof(char),12,Dados) != 0 &&
             fread(&C.cidade,sizeof(char),31,Dados) != 0 &&
             fread(&C.saldo,sizeof(float),1,Dados) != 0 &&
             fread(&C.transferenciasRealizadas,sizeof(int),1,Dados) != 0
         )
-        {
-            if(C.idConta == id)
-            {
-                posicaoCursor = ftell(Dados);
-            }
-        }
+        { if(C.idConta == id && C.idConta >= 1) { posicaoCursor = ftell(Dados); } }
         fclose(Dados);
     }
-    else
-    {
-        printf("\n\t⨂ Arquivo não encontrado.\n");
-    }
+    else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
     return posicaoCursor;
 }
 
@@ -147,9 +137,9 @@ void depositar()
     printf("\n\tDigite o ID da conta desejada: ");
     int idTemporario = 0;
     scanf("%d", &idTemporario);
-    int posicao = buscarConta(idTemporario);
+    int posicao = buscaBinariaPorID(idTemporario);
 
-    if(posicao != -1)
+    if(posicao >= 0)
     {
         printf("\n\t⅏ Buscando contas...\n");
         printf("\n\t⨀ Conta encontrada com sucesso.\n");
@@ -169,16 +159,10 @@ void depositar()
             fwrite(&C.saldo,sizeof(float),1,Dados);
             printf("\n\t⥣ Depósito realizado com sucesso.\n");
         }
-        else
-        {
-            printf("\n\t⨂ Arquivo não encontrado.\n");
-        }
+        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
         fclose(Dados);
     }
-    else
-    {
-        printf("\n\t⨂ Conta não encontrada no sistema.\n");
-    }
+    else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
 
 void atualizarConta()
@@ -189,10 +173,11 @@ void atualizarConta()
 
     printf("\n\tDigite o ID da conta desejada: ");
     int idTemporario = 0;
-    scanf("%d", &idTemporario); fgetc(stdin);
-    int posicao = buscarConta(idTemporario);
+    scanf("%d", &idTemporario);
+    fgetc(stdin);
+    int posicao = buscaBinariaPorID(idTemporario);
 
-    if(posicao != -1)
+    if(posicao >= 0)
     {
         printf("\n\t⅏ Buscando conta...\n");
         printf("\n\t⨀ Conta encontrada com sucesso.\n");
@@ -201,7 +186,7 @@ void atualizarConta()
 
         if(Dados != NULL)
         {
-            fseek(Dados,(posicao - 88) + sizeof(int),SEEK_SET);
+            fseek(Dados,(posicao) + sizeof(int),SEEK_SET);
             Conta C;
 
             printf("\n\tNome: ");   scanf("%[^\n]s", C.nomePessoa); fgetc(stdin);
@@ -212,16 +197,10 @@ void atualizarConta()
             fwrite(&C.CPF,sizeof(char),12,Dados);
             fwrite(&C.cidade,sizeof(char),31,Dados);
         }
-        else
-        {
-            printf("\n\t⨂ Arquivo não encontrado.\n");
-        }
+        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
         fclose(Dados);
     }
-    else
-    {
-        printf("\n\t⨂ Conta não encontrada no sistema.\n");
-    }
+    else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
 
 void sacar()
@@ -233,9 +212,9 @@ void sacar()
     printf("\n\tDigite o ID da conta desejada: ");
     int idTemporario = 0;
     scanf("%d", &idTemporario);
-    int posicao = buscarConta(idTemporario);
+    int posicao = buscaBinariaPorID(idTemporario);
 
-    if(posicao != -1)
+    if(posicao >= 0)
     {
         printf("\n\t⅏ Buscando conta...\n");
         printf("\n\t⨀ Conta encontrada com sucesso.\n");
@@ -252,10 +231,7 @@ void sacar()
             float saldoTemporario = 0.0;
             scanf("%f", &saldoTemporario);
             C.saldo -= saldoTemporario;
-            if(C.saldo < 0)
-            {
-                printf("\n\tErro, saldo insuficiente.\n");
-            }
+            if(C.saldo < 0) { printf("\n\tErro, saldo insuficiente.\n"); }
             else
             {
                 fwrite(&C.saldo,sizeof(float),1,Dados);
@@ -281,12 +257,12 @@ void realizarTransferencia()
     printf("\n\tDigite o ID da conta destinatária: ");
     scanf("%d", &idDes);
 
-    int posicaoR = buscarConta(idRem);
-    int posicaoD = buscarConta(idDes);
+    int posicaoR = buscaBinariaPorID(idRem);
+    int posicaoD = buscaBinariaPorID(idDes);
 
     printf("\n\t⅏ Buscando contas...\n");
 
-    if(posicaoD != -1 && posicaoR != -1)
+    if(posicaoD >= 0 && posicaoR >= 0)
     {
         FILE *Dados = fopen("Contas.bin", "rb+");
 
@@ -308,10 +284,7 @@ void realizarTransferencia()
             fread(&destinataria.saldo,sizeof(float),1,Dados);
             fread(&destinataria.transferenciasRealizadas,sizeof(int),1,Dados);
 
-            if(saldoTemporario > remetente.saldo)
-            {
-                printf("\n\tErro, valor insuficiente para a operação.\n");
-            }
+            if(saldoTemporario > remetente.saldo) { printf("\n\tErro, valor insuficiente para a operação.\n"); }
             else
             {
                 remetente.saldo -= saldoTemporario;
@@ -327,16 +300,10 @@ void realizarTransferencia()
                 printf("\n\t⤮ Transferência realizada com sucesso.\n");
             }
         }
-        else
-        {
-            printf("\n\t⨂ Arquivo não encontrado.\n");
-        }
+        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
         fclose(Dados);
     }
-    else
-    {
-        printf("\n\t⨂ Contas não encontradas no sistema.\n");
-    }
+    else { printf("\n\t⨂ Contas não encontradas no sistema.\n"); }
 }
 
 void deletarConta()
@@ -349,7 +316,7 @@ void deletarConta()
     int idTemporario = 0;
     scanf("%d", &idTemporario);
 
-    int posicao = buscarConta(idTemporario);
+    int posicao = buscaBinariaPorID(idTemporario);
 
     if(posicao != -1)
     {
@@ -359,32 +326,110 @@ void deletarConta()
         FILE *Dados = fopen("Contas.bin", "rb+");
         if(Dados != NULL)
         {
-            fseek(Dados,(posicao - 88) + sizeof(int),SEEK_SET);
+            fseek(Dados,(posicao - 88),SEEK_SET);
 
             Conta C;
+            C.idConta = idTemporario*-1;
             strcpy(C.CPF, "Removida");
             strcpy(C.cidade, "Removida");
             strcpy(C.nomePessoa, "Removida");
             C.saldo = 0.0;
             C.transferenciasRealizadas = 0;
 
+            fwrite(&C.idConta,sizeof(int),1,Dados);
             fwrite(&C.nomePessoa,sizeof(char),33,Dados);
             fwrite(&C.CPF,sizeof(char),12,Dados);
             fwrite(&C.cidade,sizeof(char),31,Dados);
-            printf("%ld\n", ftell(Dados));
             fwrite(&C.saldo,sizeof(float),1,Dados);
             fwrite(&C.transferenciasRealizadas,sizeof(int),1,Dados);
 
+            removerIndice(idTemporario);
             printf("\n\t⊛ Conta removida com sucesso.\n");
         }
-        else
-        {
-            printf("\n\t⨂ Arquivo não encontrado.\n");
-        }
+        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
         fclose(Dados);
     }
-    else
+    else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
+}
+
+void adicionarIndices(int id, long posicaoNoArquivo)
+{
+    FILE *Indices = fopen("Indices.bin","ab");
+
+    if(Indices != NULL)
     {
-        printf("\n\t⨂ Conta não encontrada no sistema.\n");
+        fwrite(&id,sizeof(int),1,Indices);
+        fwrite(&posicaoNoArquivo,sizeof(long),1,Indices);
+        fclose(Indices);
     }
+    else { printf("\n\t🄸 Arquivo de índices não encontrado.\n"); }
+}
+
+void removerIndice(int ID)
+{
+    FILE *Indices = fopen("Indices.bin","rb+");
+
+    int posicaoCursor = ID - 1;
+    printf("Pos: %d\n",posicaoCursor);
+    if(Indices != NULL)
+    {
+        int idAux = 0;
+        long posicaoAux = 0;
+        while(fread(&idAux, sizeof(int),1,Indices) != 0 && fread(&posicaoAux,sizeof(long),1,Indices) != 0)
+        {
+            if(idAux == ID)
+            {
+                fseek(Indices,posicaoCursor*(sizeof(int)+sizeof(long)),SEEK_SET);
+                idAux = ID * -1;
+                fwrite(&idAux,sizeof(int),1,Indices);
+                printf("🄸 Remoção realizada com sucesso.\n");
+            }
+        }
+        fclose(Indices);
+    }
+    else { printf("\n\t🄸 Arquivo de índices não encontrado.\n"); }
+}
+
+int buscaBinariaPorID(int ID)
+{
+    int posicaoCursor = -1;
+    FILE *Indices = fopen("Indices.bin","rb");
+
+    if(Indices != NULL)
+    {
+        fseek(Indices,0,SEEK_END);
+        int tamanhoVetor = ftell(Indices)/(sizeof(int)+sizeof(long));
+        int meioVetor = 0;
+        int inicioVetor = 0;
+        int finalVetor = tamanhoVetor;
+
+        int *vetorIndices = (int*)malloc(tamanhoVetor*sizeof(int));
+
+        if(vetorIndices == NULL) { printf("\n\tErro na alocação do vetor.\n"); }
+        else
+        {
+            for(int i = 0; i < tamanhoVetor; i++)
+            {
+                fseek(Indices,i*(sizeof(int)+sizeof(long)),SEEK_SET);
+                fread(&vetorIndices[i],sizeof(int),1,Indices);
+            }
+            while(inicioVetor <= finalVetor)
+            {
+                meioVetor = (inicioVetor + finalVetor)/2;
+                if(ID == vetorIndices[meioVetor])
+                {
+                    fseek(Indices,(meioVetor*12)+4,SEEK_SET);
+                    fread(&posicaoCursor,sizeof(long),1,Indices);
+                    break;
+                }
+                else if(ID < vetorIndices[meioVetor]) { finalVetor = meioVetor - 1; continue;  }
+                else if(ID > vetorIndices[meioVetor]) { inicioVetor = meioVetor + 1; continue; }
+                else { break; }
+            }
+        }
+        free(vetorIndices);
+        fclose(Indices);
+    }
+    else { printf("\n\t🄸 Arquivo não encontrado.\n"); }
+    return posicaoCursor;
 }
