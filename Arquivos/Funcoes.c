@@ -2,6 +2,8 @@
 
 void imprimirConta(Conta C)
 {
+    printf(BRANCO);
+    printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
     printf("\n\t┃                    ⋑ Sua Conta ⋐                   ┃");
     printf("\n\t┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫");
@@ -12,10 +14,12 @@ void imprimirConta(Conta C)
     printf("\n\t┃ Saldo disponível: %-9.2f                        ┃", C.saldo);
     printf("\n\t┃ Tranferências: %-2d                                  ┃", C.transferenciasRealizadas);
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
+    printf(CONVENCIONAL);
 }
 
 void imprimirMenuPrincipal()
 {
+    printf(NEGRITO);
     printf("\n");
     printf("\t┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓\n");
     printf("\t┃    No bolso!    ┃ ⦛ Administrador ⦛   ┃\n");
@@ -33,6 +37,7 @@ void imprimirMenuPrincipal()
     printf("\t┃ 9 • Sair                              ┃\n");
     printf("\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
     printf("\n");
+    printf(CONVENCIONAL);
 }
 
 void criarConta()
@@ -81,6 +86,7 @@ void imprimirContas()
     {
         Conta C;
 
+        printf(NEGRITO);
         printf("\n\t┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━┓");
         printf("\n\t┃  ID.  ┃          Nome Completo          ┃     CPF.     ┃             Cidade              ┃  Saldo (R$)  ┃ Transf. ┃");
         printf("\n\t┣━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━╋━━━━━━━━━┫");
@@ -97,6 +103,7 @@ void imprimirContas()
             printf("\n\t┃ %-5d ┃ %-31s ┃ %-12s ┃ %-31s ┃ %-12.2f ┃ %-7d ┃", C.idConta, C.nomePessoa, C.CPF,C.cidade, C.saldo,C.transferenciasRealizadas);
         }
         printf("\n\t┗━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━┛\n\n");
+        printf(CONVENCIONAL);
         fclose(Dados);
     }
     else
@@ -130,9 +137,11 @@ int buscaContaTradicional(int id)
 
 void depositar()
 {
+    printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━┓");
     printf("\n\t┃    Depositar    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━┛\n");
+    printf(CONVENCIONAL);
 
     printf("\n\tDigite o ID da conta desejada: ");
     int idTemporario = 0;
@@ -167,9 +176,11 @@ void depositar()
 
 void atualizarConta()
 {
+    printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━┓");
     printf("\n\t┃    Atualizar Conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+    printf(CONVENCIONAL);
 
     printf("\n\tDigite o ID da conta desejada: ");
     int idTemporario = 0;
@@ -205,9 +216,11 @@ void atualizarConta()
 
 void sacar()
 {
+    printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━┓");
     printf("\n\t┃    Saque    ┃");
     printf("\n\t┗━━━━━━━━━━━━━┛\n");
+    printf(CONVENCIONAL);
 
     printf("\n\tDigite o ID da conta desejada: ");
     int idTemporario = 0;
@@ -246,9 +259,11 @@ void sacar()
 
 void realizarTransferencia()
 {
+    printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
     printf("\n\t┃    Realizar transferências    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+    printf(CONVENCIONAL);
 
     int idRem = -1;
     int idDes = -1;
@@ -308,9 +323,11 @@ void realizarTransferencia()
 
 void deletarConta()
 {
+    printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━┓");
     printf("\n\t┃    Deletar conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━┛\n");
+    printf(CONVENCIONAL);
 
     printf("\n\tDigite o ID da conta desejada: ");
     int idTemporario = 0;
@@ -318,7 +335,7 @@ void deletarConta()
 
     int posicao = buscaBinariaPorID(idTemporario);
 
-    if(posicao != -1)
+    if(posicao >= 0)
     {
         printf("\n\t⅏ Buscando conta...\n");
         printf("\n\t⨀ Conta encontrada com sucesso.\n");
@@ -435,4 +452,40 @@ int buscaBinariaPorID(int ID)
     }
     else { printf("\n\t⊹ Conta removida ou desconhecida.\n"); }
     return posicaoCursor;
+}
+
+
+void buscaAvulsa()
+{
+    printf(NEGRITO);
+    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃    Buscar conta    ┃");
+    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━┛\n");
+    printf(CONVENCIONAL);
+
+    printf("\n\tDigite o ID da conta: ");
+    int idTemporario = 0;
+    scanf("%d", &idTemporario);
+
+    int posicao = buscaBinariaPorID(idTemporario);
+
+    if(posicao >= 0)
+    {
+        FILE *Dados = fopen("Contas.bin","rb");
+        if(Dados != NULL)
+        {
+            fseek(Dados,posicao,SEEK_SET);
+            Conta C;
+            fread(&C.idConta, sizeof(int),1,Dados);
+            fread(&C.nomePessoa,sizeof(char),33,Dados);
+            fread(&C.CPF,sizeof(char),12,Dados);
+            fread(&C.cidade,sizeof(char),31,Dados);
+            fread(&C.saldo,sizeof(float),1,Dados);
+            fread(&C.transferenciasRealizadas,sizeof(int),1,Dados);
+            imprimirConta(C);
+            fclose(Dados);
+        }
+        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
+    }
+    else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
