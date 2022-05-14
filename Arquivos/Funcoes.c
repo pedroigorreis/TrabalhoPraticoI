@@ -149,9 +149,9 @@ void depositar()
         if(Dados != NULL)
         {
             Conta C;
-            fseek(Dados,(posicao - 8),SEEK_SET);
+            fseek(Dados,posicao + 80,SEEK_SET);
             fread(&C.saldo,sizeof(float),1,Dados);
-            fseek(Dados,(posicao - 8),SEEK_SET);
+            fseek(Dados,posicao + 80,SEEK_SET);
             printf("\n\tDigite o valor para depositar: ");
             float saldoTemporario = 0.0;
             scanf("%f", &saldoTemporario);
@@ -224,14 +224,14 @@ void sacar()
         if(Dados != NULL)
         {
             Conta C;
-            fseek(Dados,(posicao - 8),SEEK_SET);
+            fseek(Dados,posicao + 80,SEEK_SET);
             fread(&C.saldo,sizeof(float),1,Dados);
-            fseek(Dados,(posicao - 8),SEEK_SET);
+            fseek(Dados,posicao + 80,SEEK_SET);
             printf("\n\tDigite o valor para sacar: ");
             float saldoTemporario = 0.0;
             scanf("%f", &saldoTemporario);
             C.saldo -= saldoTemporario;
-            if(C.saldo < 0) { printf("\n\tErro, saldo insuficiente.\n"); }
+            if(C.saldo < 0) { printf("\n\tⓧ Erro, saldo insuficiente.\n"); }
             else
             {
                 fwrite(&C.saldo,sizeof(float),1,Dados);
@@ -276,25 +276,25 @@ void realizarTransferencia()
             Conta remetente;
             Conta destinataria;
 
-            fseek(Dados,(posicaoR - 8),SEEK_SET);
+            fseek(Dados,posicaoR + 80,SEEK_SET);
             fread(&remetente.saldo,sizeof(float),1,Dados);
             fread(&remetente.transferenciasRealizadas,sizeof(int),1,Dados);
 
-            fseek(Dados,(posicaoD - 8),SEEK_SET);
+            fseek(Dados,posicaoD + 80,SEEK_SET);
             fread(&destinataria.saldo,sizeof(float),1,Dados);
             fread(&destinataria.transferenciasRealizadas,sizeof(int),1,Dados);
 
-            if(saldoTemporario > remetente.saldo) { printf("\n\tErro, valor insuficiente para a operação.\n"); }
+            if(saldoTemporario > remetente.saldo) { printf("\n\tⓧ Erro, valor insuficiente para a operação.\n"); }
             else
             {
                 remetente.saldo -= saldoTemporario;
                 destinataria.saldo += saldoTemporario;
                 remetente.transferenciasRealizadas++;
                 destinataria.transferenciasRealizadas++;
-                fseek(Dados,(posicaoR - 8),SEEK_SET);
+                fseek(Dados,posicaoR + 80,SEEK_SET);
                 fwrite(&remetente.saldo,sizeof(float),1,Dados);
                 fwrite(&remetente.transferenciasRealizadas,sizeof(int),1,Dados);
-                fseek(Dados,(posicaoD - 8),SEEK_SET);
+                fseek(Dados,posicaoD + 80,SEEK_SET);
                 fwrite(&destinataria.saldo,sizeof(float),1,Dados);
                 fwrite(&destinataria.transferenciasRealizadas,sizeof(int),1,Dados);
                 printf("\n\t⤮ Transferência realizada com sucesso.\n");
@@ -370,7 +370,6 @@ void removerIndice(int ID)
     FILE *Indices = fopen("Indices.bin","rb+");
 
     int posicaoCursor = ID - 1;
-    printf("Pos: %d\n",posicaoCursor);
     if(Indices != NULL)
     {
         int idAux = 0;
@@ -382,7 +381,7 @@ void removerIndice(int ID)
                 fseek(Indices,posicaoCursor*(sizeof(int)+sizeof(long)),SEEK_SET);
                 idAux = ID * -1;
                 fwrite(&idAux,sizeof(int),1,Indices);
-                printf("🄸 Remoção realizada com sucesso.\n");
+                printf("\n\t🄸 Remoção realizada com sucesso.\n");
             }
         }
         fclose(Indices);
@@ -393,43 +392,47 @@ void removerIndice(int ID)
 int buscaBinariaPorID(int ID)
 {
     int posicaoCursor = -1;
-    FILE *Indices = fopen("Indices.bin","rb");
-
-    if(Indices != NULL)
+    if(ID >= 0)
     {
-        fseek(Indices,0,SEEK_END);
-        int tamanhoVetor = ftell(Indices)/(sizeof(int)+sizeof(long));
-        int meioVetor = 0;
-        int inicioVetor = 0;
-        int finalVetor = tamanhoVetor;
+        FILE *Indices = fopen("Indices.bin","rb");
 
-        int *vetorIndices = (int*)malloc(tamanhoVetor*sizeof(int));
-
-        if(vetorIndices == NULL) { printf("\n\tErro na alocação do vetor.\n"); }
-        else
+        if(Indices != NULL)
         {
-            for(int i = 0; i < tamanhoVetor; i++)
+            fseek(Indices,0,SEEK_END);
+            int tamanhoVetor = ftell(Indices)/(sizeof(int)+sizeof(long));
+            int meioVetor = 0;
+            int inicioVetor = 0;
+            int finalVetor = tamanhoVetor;
+
+            int *vetorIndices = (int*)malloc(tamanhoVetor*sizeof(int));
+
+            if(vetorIndices == NULL) { printf("\n\tErro na alocação do vetor.\n"); }
+            else
             {
-                fseek(Indices,i*(sizeof(int)+sizeof(long)),SEEK_SET);
-                fread(&vetorIndices[i],sizeof(int),1,Indices);
-            }
-            while(inicioVetor <= finalVetor)
-            {
-                meioVetor = (inicioVetor + finalVetor)/2;
-                if(ID == vetorIndices[meioVetor])
+                for(int i = 0; i < tamanhoVetor; i++)
                 {
-                    fseek(Indices,(meioVetor*12)+4,SEEK_SET);
-                    fread(&posicaoCursor,sizeof(long),1,Indices);
-                    break;
+                    fseek(Indices,i*(sizeof(int)+sizeof(long)),SEEK_SET);
+                    fread(&vetorIndices[i],sizeof(int),1,Indices);
                 }
-                else if(ID < vetorIndices[meioVetor]) { finalVetor = meioVetor - 1; continue;  }
-                else if(ID > vetorIndices[meioVetor]) { inicioVetor = meioVetor + 1; continue; }
-                else { break; }
+                while(inicioVetor <= finalVetor)
+                {
+                    meioVetor = (inicioVetor + finalVetor)/2;
+                    if(ID == vetorIndices[meioVetor])
+                    {
+                        fseek(Indices,(meioVetor*12)+4,SEEK_SET);
+                        fread(&posicaoCursor,sizeof(long),1,Indices);
+                        break;
+                    }
+                    else if(ID < vetorIndices[meioVetor]) { finalVetor = meioVetor - 1; continue;  }
+                    else if(ID > vetorIndices[meioVetor]) { inicioVetor = meioVetor + 1; continue; }
+                    else { break; }
+                }
             }
+            free(vetorIndices);
+            fclose(Indices);
         }
-        free(vetorIndices);
-        fclose(Indices);
+        else { printf("\n\t🄸 Arquivo não encontrado.\n"); }
     }
-    else { printf("\n\t🄸 Arquivo não encontrado.\n"); }
+    else { printf("\n\t⊹ Conta removida ou desconhecida.\n"); }
     return posicaoCursor;
 }
