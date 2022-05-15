@@ -19,7 +19,7 @@ int main(void)
             case 2: { system("clear"); printf(ROSA);    atualizarConta();       break; }
             case 3: { system("clear"); printf(VERDE);   realizarTransferencia();break; }
             case 4: { system("clear"); printf(VERMELHO);deletarConta();         break; }
-            case 6: { system("clear"); printf(CIANO); buscaAvulsa();            break; }
+            case 6: { system("clear"); printf(CIANO);   buscaAvulsa();          break; }
             case 5: { system("clear"); printf(AMARELO); imprimirContas();       break; }
             case 7: { system("clear"); printf(VERDE);   depositar();            break; }
             case 8: { system("clear"); printf(VERDE);   sacar();                break; }

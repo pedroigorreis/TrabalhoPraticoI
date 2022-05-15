@@ -2,7 +2,6 @@
 
 void imprimirConta(Conta C)
 {
-    printf(BRANCO);
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
     printf("\n\t┃                    ⋑ Sua Conta ⋐                   ┃");
@@ -100,7 +99,7 @@ void imprimirContas()
             fread(&C.transferenciasRealizadas,sizeof(int),1,Dados) != 0
         )
         {
-            printf("\n\t┃ %-5d ┃ %-31s ┃ %-12s ┃ %-31s ┃ %-12.2f ┃ %-7d ┃", C.idConta, C.nomePessoa, C.CPF,C.cidade, C.saldo,C.transferenciasRealizadas);
+            if(C.idConta >= 0) { printf("\n\t┃ %-5d ┃ %-31s ┃ %-12s ┃ %-31s ┃ %-12.2f ┃ %-7d ┃", C.idConta, C.nomePessoa, C.CPF,C.cidade, C.saldo,C.transferenciasRealizadas); }
         }
         printf("\n\t┗━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━┛\n\n");
         printf(CONVENCIONAL);
@@ -207,6 +206,10 @@ void atualizarConta()
             fwrite(&C.nomePessoa,sizeof(char),33,Dados);
             fwrite(&C.CPF,sizeof(char),12,Dados);
             fwrite(&C.cidade,sizeof(char),31,Dados);
+
+            FILE *ListaInvertida = fopen("ListaInvertida.bin","rb+");
+            fseek(ListaInvertida,posicao,SEEK_SET);
+            fclose(ListaInvertida);
         }
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
         fclose(Dados);
@@ -343,7 +346,7 @@ void deletarConta()
         FILE *Dados = fopen("Contas.bin", "rb+");
         if(Dados != NULL)
         {
-            fseek(Dados,(posicao - 88),SEEK_SET);
+            fseek(Dados,(posicao),SEEK_SET);
 
             Conta C;
             C.idConta = idTemporario*-1;
@@ -454,7 +457,6 @@ int buscaBinariaPorID(int ID)
     return posicaoCursor;
 }
 
-
 void buscaAvulsa()
 {
     printf(NEGRITO);
@@ -482,10 +484,34 @@ void buscaAvulsa()
             fread(&C.cidade,sizeof(char),31,Dados);
             fread(&C.saldo,sizeof(float),1,Dados);
             fread(&C.transferenciasRealizadas,sizeof(int),1,Dados);
+            printf(AMARELO);
             imprimirConta(C);
             fclose(Dados);
         }
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
     }
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
+}
+
+void buscaPorInfo()
+{
+    printf(NEGRITO);
+    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃    Buscar conta    ┃");
+    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━┛\n");
+    printf(CONVENCIONAL);
+
+    FILE *ListaInvertida = fopen("ListaInvertida.bin","rb");
+
+    if(ListaInvertida != NULL)
+    {
+        printf("\n\t₪ Arquivo encontrado com sucesso.\n");
+
+        printf("\n\tDigite o nome do usuário ou a cidade correspondente: ");
+
+        char infoTemporaria[31] = ""; scanf("%[^\n]s", infoTemporaria); fgetc(stdin);
+
+        fclose(ListaInvertida);
+    }
+    else { printf("\n\t₪ Arquivo não encontrado.\n"); }
 }
