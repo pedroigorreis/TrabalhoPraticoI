@@ -1,20 +1,28 @@
+//      ⏱ Data: 07/03/2022
+//      ⚒ Autores: Pedro Igor Martins dos Reis & Hernane Veloso
+//      ⛩ Curso: Engenharia de Computação / PUC Minas 2022
+//      ⛺ Disciplina: Algoritmos e Estruturas de Dados III
+
 #include "Bibliotecas.h"
 
 void imprimirConta(Conta C)
 {
     printf(NEGRITO);
-    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃                    ⋑ Sua Conta ⋐                   ┃");
-    printf("\n\t┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫");
-    printf("\n\t┃ ID: %-5d                                          ┃", C.idConta);
-    printf("\n\t┃ Nome: %-31s              ┃", C.nomePessoa);
-    printf("\n\t┃ CPF: %-12s                                  ┃", C.CPF);
-    printf("\n\t┃ Cidade registrada: %-31s ┃", C.cidade);
-    printf("\n\t┃ Saldo disponível: %-9.2f                        ┃", C.saldo);
-    printf("\n\t┃ Tranferências: %-2d                                  ┃", C.transferenciasRealizadas);
-    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
+    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃                     ⋑ Sua Conta ⋐                    ┃");
+    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
     printf(CONVENCIONAL);
+    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃ ☘ ID: %-5d                                          ┃", C.idConta);
+    printf("\n\t┃ ☺ Nome: %-31s              ┃", C.nomePessoa);
+    printf("\n\t┃ ♮ CPF: %-12s                                  ┃", C.CPF);
+    printf("\n\t┃ ⚐ Cidade registrada: %-31s ┃", C.cidade);
+    printf("\n\t┃ ₤ Saldo disponível: %-9.2f                        ┃", C.saldo);
+    printf("\n\t┃ ⛖ Tranferências: %-2d                                  ┃", C.transferenciasRealizadas);
+    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
 }
+
+// imprimirConta(Conta C) → Imprime de forma (mais) legível informações da conta. Não retorna nada.
 
 void imprimirMenuPrincipal()
 {
@@ -39,13 +47,15 @@ void imprimirMenuPrincipal()
     printf(CONVENCIONAL);
 }
 
+// imprimirMenuPrincipal() → Imprime todas funções disponíveis no programa. Não retorna nada.
+
 void criarConta()
 {
     Conta C;
     FILE *Dados = fopen("Contas.bin", "ab");
 
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃    Criar conta    ┃");
+    printf("\n\t┃  ≗ Criar conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━┛\n");
 
     printf("\n\tNome: ");
@@ -74,8 +84,13 @@ void criarConta()
     fwrite(&C.transferenciasRealizadas,sizeof(int),1,Dados);
 
     imprimirConta(C);
+    adicionarDadosListaInvertida(C.idConta,C.nomePessoa,"NomesLI.bin");
+    // adicionarDadosListaInvertida(C.idConta,C.cidade,"CidadesLI.bin");
     fclose(Dados);
 }
+
+// criarConta() → Recolhe os dados necessários para criação da conta as escreve no arquivo
+// "Contas.bin" de forma binária. Não retorna nada.
 
 void imprimirContas()
 {
@@ -109,6 +124,9 @@ void imprimirContas()
     { printf("\n\t⨂ Arquivo não encontrada.\n"); }
 }
 
+// imprimirContas() → Imprime em formato de lista todas as contas registradas no arquivo "Contas.bin".
+// Não retorna nada.
+
 int buscaContaTradicional(int id)
 {
     Conta C;
@@ -134,11 +152,16 @@ int buscaContaTradicional(int id)
     return posicaoCursor;
 }
 
+// buscaContaTradicional(int id) → Busca no arquivo "Contas.bin" a conta diretamente pelo ID informado, porém
+// não mais utilizado devido as demandas da segunda parte do projeto
+// (Consultar: https://pucminas.instructure.com/courses/88639/files/5866512?module_item_id=2279453).
+// Retorna a posição do registro no arquivo de contas.
+
 void depositar()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃    Depositar    ┃");
+    printf("\n\t┃  ≙ Depositar    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
@@ -173,11 +196,14 @@ void depositar()
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
 
+// depositar() → Função para adicionar novos fundos a conta registrada (caso a encontre) no arquivo,
+// recolhe o valor a adicionar e soma ao valor atual registrado. Não retorna nada.
+
 void atualizarConta()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃    Atualizar Conta    ┃");
+    printf("\n\t┃  ≛ Atualizar Conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
@@ -196,6 +222,12 @@ void atualizarConta()
 
         if(Dados != NULL)
         {
+            char antigoNomePessoa[31];
+//             char antigaCidadeRegistrada[31];
+            fseek(Dados,(posicao) + sizeof(int),SEEK_SET);
+            fread(antigoNomePessoa,sizeof(char),31,Dados);
+//             fseek(Dados,12,SEEK_CUR);
+//             fread(antigaCidadeRegistrada,sizeof(char),31,Dados);
             fseek(Dados,(posicao) + sizeof(int),SEEK_SET);
             Conta C;
 
@@ -207,9 +239,8 @@ void atualizarConta()
             fwrite(&C.CPF,sizeof(char),12,Dados);
             fwrite(&C.cidade,sizeof(char),31,Dados);
 
-            FILE *ListaInvertida = fopen("ListaInvertida.bin","rb+");
-            fseek(ListaInvertida,posicao,SEEK_SET);
-            fclose(ListaInvertida);
+            atualizarDadosListaInvertida(idTemporario,antigoNomePessoa,C.nomePessoa,"NomesLI.bin");
+            // atualizarDadosListaInvertida(idTemporario,antigaCidadeRegistrada,C.cidade,"CidadesLI.bin");
         }
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
         fclose(Dados);
@@ -217,11 +248,17 @@ void atualizarConta()
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
 
+// atualizarConta() → Função para atualizar os dados a conta registrada (caso a encontre) no arquivo,
+// recolhe novamente os dados necessários. Não retorna nada.
+// OBS: Fora comentada a função que cria arquivo de 'CidadesLI' para facilitar no gerenciamento do projeto, no entanto,
+// não apenas é possível adicionar outros campos, mas os métodos referentes as listas permitem que coloque qualquer caminho
+// / arquivo de sua preferência.
+
 void sacar()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━┓");
-    printf("\n\t┃    Saque    ┃");
+    printf("\n\t┃  ≚ Saque    ┃");
     printf("\n\t┗━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
@@ -247,7 +284,7 @@ void sacar()
             float saldoTemporario = 0.0;
             scanf("%f", &saldoTemporario);
             C.saldo -= saldoTemporario;
-            if(C.saldo < 0) { printf("\n\tⓧ Erro, saldo insuficiente.\n"); }
+            if(C.saldo < 0) { printf("\n\t🄏 Erro, saldo insuficiente.\n"); }
             else
             {
                 fwrite(&C.saldo,sizeof(float),1,Dados);
@@ -260,11 +297,14 @@ void sacar()
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
 
+// sacar() → Função para sacar valores da conta registrada (caso a encontre) no arquivo,
+// possibilita a operação somente se o valor for inferior ou igual ao atual saldo. Não retorna nada.
+
 void realizarTransferencia()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃    Realizar transferências    ┃");
+    printf("\n\t┃  ≘ Realizar transferências    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
@@ -302,7 +342,7 @@ void realizarTransferencia()
             fread(&destinataria.saldo,sizeof(float),1,Dados);
             fread(&destinataria.transferenciasRealizadas,sizeof(int),1,Dados);
 
-            if(saldoTemporario > remetente.saldo) { printf("\n\tⓧ Erro, valor insuficiente para a operação.\n"); }
+            if(saldoTemporario > remetente.saldo) { printf("\n\t🄏 Erro, valor insuficiente para a operação.\n"); }
             else
             {
                 remetente.saldo -= saldoTemporario;
@@ -321,14 +361,18 @@ void realizarTransferencia()
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
         fclose(Dados);
     }
-    else { printf("\n\t⨂ Contas não encontradas no sistema.\n"); }
+    else { printf("\n\t⨂ Uma ou ambas as contas não encontradas no sistema.\n"); }
 }
+
+// realizarTransferencia() → Função para transferir valores de contas registradas (caso as encontre) no
+// arquivo, possibilita a operação somente se o valor for inferior ou igual ao atual saldo da conta
+// remetente, além disso há um incremento no atributo 'transferenciasRealizadas'. Não retorna nada.
 
 void deletarConta()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃    Deletar conta    ┃");
+    printf("\n\t┃  ≢ Deletar conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
@@ -364,6 +408,8 @@ void deletarConta()
             fwrite(&C.transferenciasRealizadas,sizeof(int),1,Dados);
 
             removerIndice(idTemporario);
+            removerDadosListaInvertida(idTemporario,"NomesLI.bin");
+//             removerDadosListaInvertida(idTemporario,"CidadesLI.bin");
             printf("\n\t⊛ Conta removida com sucesso.\n");
         }
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
@@ -371,6 +417,13 @@ void deletarConta()
     }
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
+
+// deletarConta() → Função que remove uma conta desejada (caso a encontre) no arquivo,
+// diferentemente que o nome sugere, o registro não é removido do arquivo, é sobrescrito,
+// de forma que o ID é passado para negativo, os campos são modificados para 'Removida' e
+// saldo e número de transferências realizadas é zerado, isso de forma que tenha auditoria
+// de quais contas foram removidas do sistema, vale ressaltar que não é possível reutilizar
+// ou atualizar contas removidas. Não retorna nada.
 
 void adicionarIndices(int id, long posicaoNoArquivo)
 {
@@ -384,6 +437,11 @@ void adicionarIndices(int id, long posicaoNoArquivo)
     }
     else { printf("\n\t🄸 Arquivo de índices não encontrado.\n"); }
 }
+
+// adicionarIndices(int id, long posicaoNoArquivo) → Função para adicionar os IDs e as respectivas posições
+// dos registros no arquivo de contas original em um novo arquivo, denominado 'Indices.bin', para fins de
+// estudo e melhor compreensão, operações realizadas no arquivo de índice imprimem o símbolo: 🄸. Não retorna
+// nada.
 
 void removerIndice(int ID)
 {
@@ -408,6 +466,10 @@ void removerIndice(int ID)
     }
     else { printf("\n\t🄸 Arquivo de índices não encontrado.\n"); }
 }
+
+// void removerIndice(int ID) → Da mesma maneira que a função deletarConta(), converte o respectivo ID
+// para negativo no entanto a posição do registro no arquivo principal permanece o mesmo para auditoria.
+// Não retorna nada.
 
 int buscaBinariaPorID(int ID)
 {
@@ -457,61 +519,283 @@ int buscaBinariaPorID(int ID)
     return posicaoCursor;
 }
 
+// buscaBinariaPorID(int ID) → Método de busca pelas contas no arquivo de Índices conforme exigências
+// da segunda parte do projeto (Consultar: https://pucminas.instructure.com/courses/88639/files/5866512?module_item_id=2279453),
+// há ganhos de performance em relação a primeira versão por dividir as operações. Retorna a posição do registro
+// no arquivo principal e a partir desta e da função nativa de C 'fseek' posiciona o cursor no arquivo para a leitura.
+
 void buscaAvulsa()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃    Buscar conta    ┃");
+    printf("\n\t┃  🄎 Buscar conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
-    printf("\n\tDigite o ID da conta: ");
-    int idTemporario = 0;
-    scanf("%d", &idTemporario);
+    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃      🄎 Forma de busca        ┃");
+    printf("\n\t┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫");
+    printf("\n\t┃ 1 - ID | 2 - Nome do usuário ┃");
+    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+    int formaDeBusca = 0;
+    scanf("%d",&formaDeBusca);
+    fgetc(stdin);
 
-    int posicao = buscaBinariaPorID(idTemporario);
-
-    if(posicao >= 0)
+    switch(formaDeBusca)
     {
-        FILE *Dados = fopen("Contas.bin","rb");
-        if(Dados != NULL)
+        case 1:
         {
-            fseek(Dados,posicao,SEEK_SET);
-            Conta C;
-            fread(&C.idConta, sizeof(int),1,Dados);
-            fread(&C.nomePessoa,sizeof(char),33,Dados);
-            fread(&C.CPF,sizeof(char),12,Dados);
-            fread(&C.cidade,sizeof(char),31,Dados);
-            fread(&C.saldo,sizeof(float),1,Dados);
-            fread(&C.transferenciasRealizadas,sizeof(int),1,Dados);
-            printf(AMARELO);
-            imprimirConta(C);
-            fclose(Dados);
+            printf("\n\tDigite o ID da conta: ");
+            int idTemporario = 0;
+            scanf("%d", &idTemporario);
+
+            int posicao = buscaBinariaPorID(idTemporario);
+
+            if(posicao >= 0)
+            {
+                FILE *Dados = fopen("Contas.bin","rb");
+                if(Dados != NULL)
+                {
+                    fseek(Dados,posicao,SEEK_SET);
+                    Conta C;
+                    fread(&C.idConta, sizeof(int),1,Dados);
+                    fread(&C.nomePessoa,sizeof(char),33,Dados);
+                    fread(&C.CPF,sizeof(char),12,Dados);
+                    fread(&C.cidade,sizeof(char),31,Dados);
+                    fread(&C.saldo,sizeof(float),1,Dados);
+                    fread(&C.transferenciasRealizadas,sizeof(int),1,Dados);
+                    printf(AMARELO);
+                    imprimirConta(C);
+                    fclose(Dados);
+                }
+                else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
+            }
+            else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
+            break;
         }
-        else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
+        case 2:
+        {
+            printf("\n\tDigite o nome do usuário: ");
+
+            char infoTemporaria[31] = ""; scanf("%[^\n]s", infoTemporaria); fgetc(stdin);
+
+            buscarDadosListaInvertida(infoTemporaria,"NomesLI.bin");
+            break;
+        }
     }
-    else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
 
-void buscaPorInfo()
-{
-    printf(NEGRITO);
-    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃    Buscar conta    ┃");
-    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━┛\n");
-    printf(CONVENCIONAL);
+// buscaAvulsa() → Busca a conta por ID como demais funções porém imprime os dados da conta de forma
+// mais detalhada ao usuário pelo método imprimirConta(Conta C). Não retorna nada.
 
-    FILE *ListaInvertida = fopen("ListaInvertida.bin","rb");
+int verificarListaInvertida(char *origemArquivo)
+{
+    int arquivoEstaVazio = 1;
+    FILE *ListaInvertida = fopen(origemArquivo,"ab");
+
+    if(ListaInvertida != NULL) { if(ftell(ListaInvertida) != 0) { arquivoEstaVazio = 0; fclose(ListaInvertida); } }
+    else { printf("\n\t₪ Erro, arquivo indisponível."); }
+
+    return arquivoEstaVazio;
+}
+
+// verificarListaInvertida(char *origemArquivo) → Verifica se o arquivo a ser lido está de fato vazio, a lógica é bastante simples,
+// onde o documento é lido de modo 'ab', ou seja, o cursor se inicia no final, caso este seja 0, logo está vazio. Retorna a 1 se está
+// vazio e 0 o contrário.
+
+long buscarPosicaoListaInvertida(char *info,FILE *arquivo)
+{
+    long posicao = -1;
+    char infoTemporaria[31];
+    int idsTemporarios[10] = {0,0,0,0,0,0,0,0,0,0};
+    fseek(arquivo,0,SEEK_SET);
+
+    while(fread(idsTemporarios,sizeof(int),10,arquivo) != 0 && fread(infoTemporaria,sizeof(char),31,arquivo) != 0)
+    {
+        if(strstr(infoTemporaria,info) != NULL) { posicao = ftell(arquivo); }
+    }
+
+    return posicao;
+}
+
+// buscarPosicaoListaInvertida(char *info,FILE *arquivo) → Busca pelo arquivo desejado se a string informada já fora registrada anteriormente
+// através da função 'strstr' do C, fora escolhida ela ao invés do 'strcmp' para aumentar as chances de encontrar a conta desejada. Retorna a
+// posição do cursor no arquivo caso encontre o registro, -1 caso não seja encontrada.
+
+void adicionarDadosListaInvertida(int id,char *info,char *origemArquivo)
+{
+    if(verificarListaInvertida(origemArquivo) == 1)
+    {
+        FILE *ListaInvertida = fopen(origemArquivo,"ab");
+
+        if(ListaInvertida != NULL)
+        {
+            char *novasStrings = strtok(info," ");
+
+            while(novasStrings != NULL)
+            {
+                int idsTemporarios[10] = {id,0,0,0,0,0,0,0,0,1};
+                fwrite(idsTemporarios,sizeof(int),10,ListaInvertida);
+                fwrite(novasStrings,sizeof(char),31,ListaInvertida);
+                novasStrings = strtok(NULL," ");
+            }
+
+            fclose(ListaInvertida);
+        }
+        else { printf("\n\t₪ Erro, arquivo indisponível."); }
+    }
+    else
+    {
+        FILE *ListaInvertida = fopen(origemArquivo,"rb+");
+
+        if(ListaInvertida != NULL)
+        {
+            char *novasStrings = strtok(info," ");
+
+            while(novasStrings != NULL)
+            {
+                int idsTemporarios[10] = {0,0,0,0,0,0,0,0,0,0};
+                long posicao = buscarPosicaoListaInvertida(novasStrings,ListaInvertida);
+                if(posicao != -1)
+                {
+                    fseek(ListaInvertida,posicao-71,SEEK_SET);
+                    fread(idsTemporarios,sizeof(int),10,ListaInvertida);
+
+                    if(idsTemporarios[9] > 9) { idsTemporarios[9] = 1; }
+
+
+                    idsTemporarios[idsTemporarios[9]] = id;
+                    idsTemporarios[9]++;
+                    fseek(ListaInvertida,posicao-71,SEEK_SET);
+                    fwrite(idsTemporarios,sizeof(int),10,ListaInvertida);
+                }
+                else
+                {
+                    idsTemporarios[9] = 1;
+                    idsTemporarios[0] = id;
+                    fwrite(idsTemporarios,sizeof(int),10,ListaInvertida);
+                    fwrite(novasStrings,sizeof(char),31,ListaInvertida);
+                }
+                novasStrings = strtok(NULL," ");
+            }
+            fclose(ListaInvertida);
+        }
+        else { printf("\n\t₪ Erro, arquivo indisponível."); }
+    }
+}
+
+// adicionarDadosListaInvertida(int id,char *info,char *origemArquivo) → Adiciona os novos termos da Conta criada no arquivo de listas invertidas
+// preferencial do usuário (seja nome ou cidade), onde o métedo "quebra" a string em partes delimitadas por um espaço em branco e verifica se essa
+// substring já consta no documento, caso não é criado um vetor de 10 inteiros para cada nova string. Este vetor inclusive que sua última casa '9'
+// direciona onde será escrito os novos IDs, no entanto se já consta, escreve na próxima casa utilizando o "apontador". Não retorna nada.
+
+void buscarDadosListaInvertida(char *info,char *origemArquivo)
+{
+    if(verificarListaInvertida(origemArquivo) == 0)
+    {
+        FILE *ListaInvertida = fopen(origemArquivo,"rb+");
+
+        if(ListaInvertida != NULL)
+        {
+            long posicao = buscarPosicaoListaInvertida(info,ListaInvertida);
+            if(posicao != -1)
+            {
+                fseek(ListaInvertida,posicao-71,SEEK_SET);
+                int idsTemporarios[10] = {0,0,0,0,0,0,0,0,0,0};
+                fread(idsTemporarios,sizeof(int),10,ListaInvertida);
+
+                printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━┓");
+                printf("\n\t┃ ☘ IDs Correspondentes ┃");
+                printf("\n\t┣━━━━━━━━━━━━━━━━━━━━━━━┫");
+                for(int i = 0; i < 9; i++)
+                {
+                    if(idsTemporarios[i] > 0)
+                    {
+                        printf("\n\t┃ %-21d ┃",idsTemporarios[i]);
+                    }
+                }
+                printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+            }
+            else{ printf("\n\t₪ Nenhuma ID associada a esta informação.\n"); }
+            fclose(ListaInvertida);
+        }
+        else { printf("\n\t₪ Erro, arquivo indisponível."); }
+    }
+    else { printf("\n\t₪ Não constam contas registradas no arquivo."); }
+}
+
+// buscarDadosListaInvertida(char *info,char *origemArquivo) → Informa ao usuário quais contas foram encontradas a partir do dado informado, seja
+// pelo nome ou pela cidade. Não retorna nada.
+
+void removerDadosListaInvertida(int id,char *origemArquivo)
+{
+    FILE *ListaInvertida = fopen("NomesLI.bin","rb+");
 
     if(ListaInvertida != NULL)
     {
-        printf("\n\t₪ Arquivo encontrado com sucesso.\n");
+        char infoTemporaria[31];
+        int idsTemporarios[10] = {0,0,0,0,0,0,0,0,0,0};
+        while(fread(idsTemporarios,sizeof(int),10,ListaInvertida) != 0 && fread(infoTemporaria,sizeof(char),31,ListaInvertida) != 0)
+        {
+            for(int i = 0; i < 9; i++)
+            {
+                if(idsTemporarios[i] == id)
+                {
+                    idsTemporarios[i] *= -1;
+                    idsTemporarios[9]--;
 
-        printf("\n\tDigite o nome do usuário ou a cidade correspondente: ");
-
-        char infoTemporaria[31] = ""; scanf("%[^\n]s", infoTemporaria); fgetc(stdin);
-
+                }
+            }
+            fseek(ListaInvertida,-71,SEEK_CUR);
+            printf("POS dps: %ld\n",ftell(ListaInvertida));
+            fwrite(idsTemporarios,sizeof(int),10,ListaInvertida);
+            fseek(ListaInvertida,+31,SEEK_CUR);
+        }
         fclose(ListaInvertida);
     }
-    else { printf("\n\t₪ Arquivo não encontrado.\n"); }
+    else { printf("\n\t₪ Erro, arquivo indisponível."); }
 }
+
+// removerDadosListaInvertida(int id,char *origemArquivo) → Este método remove no arquivo o ID da conta excluída nas ocasiões onde foram registradas
+// esta conta, de forma que zera a posição onde se encontrava e diminui por 1 nossa casa "apontadora", de forma que caso exita uma situação onde
+// iria aparecer novamente a informação, possa ser escrita sem prejudicar a pesquisa.
+
+void atualizarDadosListaInvertida(int id,char *infoOriginal, char *infoNova,char *origemArquivo)
+{
+    if(verificarListaInvertida(origemArquivo) == 0)
+    {
+        FILE *ListaInvertida = fopen(origemArquivo,"rb+");
+
+        if(ListaInvertida != NULL)
+        {
+            char *novasStrings = strtok(infoOriginal," ");
+
+            while(novasStrings != NULL)
+            {
+                long posicao = buscarPosicaoListaInvertida(novasStrings,ListaInvertida);
+
+                fseek(ListaInvertida,posicao-71,SEEK_SET);
+                int idsTemporarios[10] = {0,0,0,0,0,0,0,0,0,0};
+                fread(idsTemporarios,sizeof(int),10,ListaInvertida);
+                for(int i = 0; i < 9; i++)
+                {
+                    if(idsTemporarios[i] == id)
+                    {
+                        idsTemporarios[i] = 0;
+                        idsTemporarios[9]--;
+                    }
+                }
+                fseek(ListaInvertida,-40,SEEK_CUR);
+                fwrite(idsTemporarios,sizeof(int),10,ListaInvertida);
+                novasStrings = strtok(NULL," ");
+            }
+            fclose(ListaInvertida);
+            adicionarDadosListaInvertida(id,infoNova,origemArquivo);
+        }
+        else { printf("\n\t₪ Erro, arquivo indisponível."); }
+    }
+    else { printf("\n\t₪ Não constam contas registradas no arquivo."); }
+}
+
+// atualizarDadosListaInvertida(int id,char *infoOriginal, char *infoNova,char *origemArquivo) → Da mesma maneira que os métodos de remoção e
+// adição, este remove resquícios das antigas informações no arquivo e escreve as novas, de maneira que não tenha conflitos de dados.
