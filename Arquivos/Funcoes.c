@@ -18,7 +18,7 @@ void imprimirConta(Conta C)
     printf("\n\t┃ ♮ CPF: %-12s                                  ┃", C.CPF);
     printf("\n\t┃ ⚐ Cidade registrada: %-31s ┃", C.cidade);
     printf("\n\t┃ ₤ Saldo disponível: %-9.2f                        ┃", C.saldo);
-    printf("\n\t┃ ⛖ Tranferências: %-2d                                  ┃", C.transferenciasRealizadas);
+    printf("\n\t┃ ⛖ Tranferências: %-u                                   ┃", C.transferenciasRealizadas);
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
 }
 
@@ -58,17 +58,9 @@ void criarConta()
     printf("\n\t┃  ≗ Criar conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━┛\n");
 
-    printf("\n\tNome: ");
-    scanf("%[^\n]s", C.nomePessoa);
-    fgetc(stdin);
-
-    printf("\n\tCPF: ");
-    scanf("%[^\n]s", C.CPF);
-    fgetc(stdin);
-
-    printf("\n\tCidade: ");
-    scanf("%[^\n]s", C.cidade);
-    fgetc(stdin);
+    printf("\n\tNome: "); fgets(C.nomePessoa,sizeof(C.nomePessoa),stdin); C.nomePessoa[strcspn(C.nomePessoa, "\n")] = 0;
+    printf("\n\tCPF: "); fgets(C.CPF,sizeof(C.CPF),stdin); C.CPF[strcspn(C.CPF, "\n")] = 0;
+    printf("\n\tCidade: "); fgets(C.cidade,sizeof(C.cidade),stdin); C.cidade[strcspn(C.cidade, "\n")] = 0;
 
     C.saldo = 0.0;
     C.idConta = (ftell(Dados) / 88) + 1;
@@ -85,7 +77,6 @@ void criarConta()
 
     imprimirConta(C);
     adicionarDadosListaInvertida(C.idConta,C.nomePessoa,"NomesLI.bin");
-    // adicionarDadosListaInvertida(C.idConta,C.cidade,"CidadesLI.bin");
     fclose(Dados);
 }
 
@@ -114,7 +105,7 @@ void imprimirContas()
             fread(&C.transferenciasRealizadas,sizeof(int),1,Dados) != 0
         )
         {
-            if(C.idConta >= 0) { printf("\n\t┃ %-5d ┃ %-31s ┃ %-12s ┃ %-31s ┃ %-12.2f ┃ %-7d ┃", C.idConta, C.nomePessoa, C.CPF,C.cidade, C.saldo,C.transferenciasRealizadas); }
+            if(C.idConta >= 0) { printf("\n\t┃ %-5d ┃ %-31s ┃ %-12s ┃ %-31s ┃ %-12.2f ┃ %-7u ┃", C.idConta, C.nomePessoa, C.CPF,C.cidade, C.saldo,C.transferenciasRealizadas); }
         }
         printf("\n\t┗━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━┛\n\n");
         printf(CONVENCIONAL);
@@ -138,7 +129,7 @@ int buscaContaTradicional(int id)
     {
         while
         (
-            fread(&C.idConta, sizeof(int),1,Dados) != -1 &&
+            fread(&C.idConta, sizeof(int),1,Dados) != 0 &&
             fread(&C.nomePessoa,sizeof(char),33,Dados) != 0 &&
             fread(&C.CPF,sizeof(char),12,Dados) != 0 &&
             fread(&C.cidade,sizeof(char),31,Dados) != 0 &&
@@ -165,9 +156,7 @@ void depositar()
     printf("\n\t┗━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
-    printf("\n\tDigite o ID da conta desejada: ");
-    int idTemporario = 0;
-    scanf("%d", &idTemporario);
+    printf("\n\tDigite o ID da conta desejada: "); int idTemporario = 0; scanf("%d", &idTemporario);
     int posicao = buscaBinariaPorID(idTemporario);
 
     if(posicao >= 0)
@@ -189,9 +178,10 @@ void depositar()
             C.saldo += saldoTemporario;
             fwrite(&C.saldo,sizeof(float),1,Dados);
             printf("\n\t⥣ Depósito realizado com sucesso.\n");
+
+            fclose(Dados);
         }
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
-        fclose(Dados);
     }
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
@@ -223,27 +213,23 @@ void atualizarConta()
         if(Dados != NULL)
         {
             char antigoNomePessoa[31];
-//             char antigaCidadeRegistrada[31];
             fseek(Dados,(posicao) + sizeof(int),SEEK_SET);
             fread(antigoNomePessoa,sizeof(char),31,Dados);
-//             fseek(Dados,12,SEEK_CUR);
-//             fread(antigaCidadeRegistrada,sizeof(char),31,Dados);
             fseek(Dados,(posicao) + sizeof(int),SEEK_SET);
             Conta C;
 
-            printf("\n\tNome: ");   scanf("%[^\n]s", C.nomePessoa); fgetc(stdin);
-            printf("\n\tCPF: ");    scanf("%[^\n]s", C.CPF);        fgetc(stdin);
-            printf("\n\tCidade: "); scanf("%[^\n]s", C.cidade);     fgetc(stdin);
+            printf("\n\tNome: "); fgets(C.nomePessoa,sizeof(C.nomePessoa),stdin); C.nomePessoa[strcspn(C.nomePessoa, "\n")] = 0;
+            printf("\n\tCPF: "); fgets(C.CPF,sizeof(C.CPF),stdin); C.CPF[strcspn(C.CPF, "\n")] = 0;
+            printf("\n\tCidade: "); fgets(C.cidade,sizeof(C.cidade),stdin); C.cidade[strcspn(C.cidade, "\n")] = 0;
 
             fwrite(&C.nomePessoa,sizeof(char),33,Dados);
             fwrite(&C.CPF,sizeof(char),12,Dados);
             fwrite(&C.cidade,sizeof(char),31,Dados);
 
             atualizarDadosListaInvertida(idTemporario,antigoNomePessoa,C.nomePessoa,"NomesLI.bin");
-            // atualizarDadosListaInvertida(idTemporario,antigaCidadeRegistrada,C.cidade,"CidadesLI.bin");
+            fclose(Dados);
         }
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
-        fclose(Dados);
     }
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
@@ -290,9 +276,9 @@ void sacar()
                 fwrite(&C.saldo,sizeof(float),1,Dados);
                 printf("\n\t⥥ Saque realizado com sucesso.\n");
             }
+            fclose(Dados);
         }
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
-        fclose(Dados);
     }
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
@@ -310,10 +296,8 @@ void realizarTransferencia()
 
     int idRem = -1;
     int idDes = -1;
-    printf("\n\tDigite o ID da conta remetente: ");
-    scanf("%d", &idRem);
-    printf("\n\tDigite o ID da conta destinatária: ");
-    scanf("%d", &idDes);
+    printf("\n\tDigite o ID da conta remetente: ");    scanf("%d", &idRem);
+    printf("\n\tDigite o ID da conta destinatária: "); scanf("%d", &idDes);
 
     int posicaoR = buscaBinariaPorID(idRem);
     int posicaoD = buscaBinariaPorID(idDes);
@@ -357,9 +341,9 @@ void realizarTransferencia()
                 fwrite(&destinataria.transferenciasRealizadas,sizeof(int),1,Dados);
                 printf("\n\t⤮ Transferência realizada com sucesso.\n");
             }
+            fclose(Dados);
         }
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
-        fclose(Dados);
     }
     else { printf("\n\t⨂ Uma ou ambas as contas não encontradas no sistema.\n"); }
 }
@@ -409,11 +393,10 @@ void deletarConta()
 
             removerIndice(idTemporario);
             removerDadosListaInvertida(idTemporario,"NomesLI.bin");
-//             removerDadosListaInvertida(idTemporario,"CidadesLI.bin");
             printf("\n\t⊛ Conta removida com sucesso.\n");
+            fclose(Dados);
         }
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
-        fclose(Dados);
     }
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
@@ -482,9 +465,8 @@ int buscaBinariaPorID(int ID)
         {
             fseek(Indices,0,SEEK_END);
             int tamanhoVetor = ftell(Indices)/(sizeof(int)+sizeof(long));
-            int meioVetor = 0;
-            int inicioVetor = 0;
             int finalVetor = tamanhoVetor;
+            int idTemporario = 0;
 
             int *vetorIndices = (int*)malloc(tamanhoVetor*sizeof(int));
 
@@ -494,11 +476,13 @@ int buscaBinariaPorID(int ID)
                 for(int i = 0; i < tamanhoVetor; i++)
                 {
                     fseek(Indices,i*(sizeof(int)+sizeof(long)),SEEK_SET);
-                    fread(&vetorIndices[i],sizeof(int),1,Indices);
+                    fread(&idTemporario,sizeof(int),1,Indices);
+                    if(idTemporario > 0) { vetorIndices[i] = idTemporario; }
                 }
+                int inicioVetor = 0;
                 while(inicioVetor <= finalVetor)
                 {
-                    meioVetor = (inicioVetor + finalVetor)/2;
+                    int meioVetor = (inicioVetor + finalVetor)/2;
                     if(ID == vetorIndices[meioVetor])
                     {
                         fseek(Indices,(meioVetor*12)+4,SEEK_SET);
@@ -506,8 +490,7 @@ int buscaBinariaPorID(int ID)
                         break;
                     }
                     else if(ID < vetorIndices[meioVetor]) { finalVetor = meioVetor - 1; continue;  }
-                    else if(ID > vetorIndices[meioVetor]) { inicioVetor = meioVetor + 1; continue; }
-                    else { break; }
+                    else { inicioVetor = meioVetor + 1; continue; }
                 }
             }
             free(vetorIndices);
@@ -528,12 +511,12 @@ void buscaAvulsa()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃  🄎 Buscar conta    ┃");
+    printf("\n\t┃  ⫯ Buscar conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃      🄎 Forma de busca        ┃");
+    printf("\n\t┃     ⫯  Forma de busca        ┃");
     printf("\n\t┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫");
     printf("\n\t┃ 1 - ID | 2 - Nome do usuário ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
@@ -577,7 +560,7 @@ void buscaAvulsa()
         {
             printf("\n\tDigite o nome do usuário: ");
 
-            char infoTemporaria[31] = ""; scanf("%[^\n]s", infoTemporaria); fgetc(stdin);
+            char infoTemporaria[31] = ""; fgets(infoTemporaria,sizeof(infoTemporaria),stdin); infoTemporaria[strcspn(infoTemporaria, "\n")] = 0;
 
             buscarDadosListaInvertida(infoTemporaria,"NomesLI.bin");
             break;
@@ -663,7 +646,6 @@ void adicionarDadosListaInvertida(int id,char *info,char *origemArquivo)
 
                     if(idsTemporarios[9] > 9) { idsTemporarios[9] = 1; }
 
-
                     idsTemporarios[idsTemporarios[9]] = id;
                     idsTemporarios[9]++;
                     fseek(ListaInvertida,posicao-71,SEEK_SET);
@@ -709,10 +691,7 @@ void buscarDadosListaInvertida(char *info,char *origemArquivo)
                 printf("\n\t┣━━━━━━━━━━━━━━━━━━━━━━━┫");
                 for(int i = 0; i < 9; i++)
                 {
-                    if(idsTemporarios[i] > 0)
-                    {
-                        printf("\n\t┃ %-21d ┃",idsTemporarios[i]);
-                    }
+                    if(idsTemporarios[i] > 0) { printf("\n\t┃ %-21d ┃",idsTemporarios[i]); }
                 }
                 printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━┛\n");
             }
@@ -743,11 +722,9 @@ void removerDadosListaInvertida(int id,char *origemArquivo)
                 {
                     idsTemporarios[i] *= -1;
                     idsTemporarios[9]--;
-
                 }
             }
             fseek(ListaInvertida,-71,SEEK_CUR);
-            printf("POS dps: %ld\n",ftell(ListaInvertida));
             fwrite(idsTemporarios,sizeof(int),10,ListaInvertida);
             fseek(ListaInvertida,+31,SEEK_CUR);
         }

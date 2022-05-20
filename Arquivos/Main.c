@@ -7,14 +7,14 @@
 
 int main(void)
 {
-    system("clear");
     int inst = -1;
+    system("clear");
 
     do
     {
         printf(BRANCO);
         imprimirMenuPrincipal();
-        scanf("%d", &inst);
+        scanf("%d",&inst);
         fgetc(stdin);
 
         switch(inst)
@@ -28,7 +28,7 @@ int main(void)
             case 7: { system("clear"); printf(VERDE);    depositar();             break; }
             case 8: { system("clear"); printf(VERDE);    sacar();                 break; }
             case 9: { break; }
-            default:{ system("clear"); printf("\n\tOpção inválida.\n");           break; }
+            default:{ system("clear"); printf("\n\t⦰ Erro, opção inválida.\n");           break; }
         }
         printf(BRANCO);
     }

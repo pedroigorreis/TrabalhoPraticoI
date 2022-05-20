@@ -11,25 +11,25 @@
 #include <string.h>
 // Bibliotecas necessárias para o funcionamento do programa.
 
-#define AZUL     "\033[0;34m"
-#define ROSA     "\033[0;35m"
-#define PRETO    "\033[0;30m"
-#define VERDE    "\033[0;32m"
-#define CIANO    "\033[0;36m"
-#define BRANCO   "\033[0;37m"
-#define AMARELO  "\033[0;33m"
-#define VERMELHO "\033[0;31m"
-#define NEGRITO  "\033[1m"
-#define CONVENCIONAL "\033[22m"
+#define AZUL            "\033[0;34m"
+#define ROSA            "\033[0;35m"
+#define PRETO           "\033[0;30m"
+#define VERDE           "\033[0;32m"
+#define CIANO           "\033[0;36m"
+#define BRANCO          "\033[0;37m"
+#define AMARELO         "\033[0;33m"
+#define VERMELHO        "\033[0;31m"
+#define NEGRITO         "\033[1m"
+#define CONVENCIONAL    "\033[22m"
 // Definição de cores e estilo de escrita para impresssão.
 
 typedef struct Conta
 {
     int idConta;
     float saldo;
-    char CPF[12];
-    char cidade[31];
-    char nomePessoa[31];
+    char CPF[14];
+    char cidade[40];
+    char nomePessoa[40];
     unsigned int transferenciasRealizadas;
 }
 Conta;
