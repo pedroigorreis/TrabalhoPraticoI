@@ -5,6 +5,7 @@
 
 #include "Bibliotecas.h"
 
+// Imprime de forma (mais) legível informações da conta. Não retorna nada.
 void imprimirConta(Conta C)
 {
     printf(NEGRITO);
@@ -14,16 +15,15 @@ void imprimirConta(Conta C)
     printf(CONVENCIONAL);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
     printf("\n\t┃ ☘ ID: %-5d                                          ┃", C.idConta);
-    printf("\n\t┃ ☺ Nome: %-31s              ┃", C.nomePessoa);
+    printf("\n\t┃ ☺ Nome: %-31s              ┃", criptografiaXOR(C.nomePessoa));
     printf("\n\t┃ ♮ CPF: %-12s                                  ┃", C.CPF);
     printf("\n\t┃ ⚐ Cidade registrada: %-31s ┃", C.cidade);
     printf("\n\t┃ ₤ Saldo disponível: %-9.2f                        ┃", C.saldo);
-    printf("\n\t┃ ⛖ Tranferências: %-u                                   ┃", C.transferenciasRealizadas);
+    printf("\n\t┃ ⛖ Transferências: %-u                                  ┃", C.transferenciasRealizadas);
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
 }
 
-// imprimirConta(Conta C) → Imprime de forma (mais) legível informações da conta. Não retorna nada.
-
+// Imprime todas funções disponíveis no programa. Não retorna nada.
 void imprimirMenuPrincipal()
 {
     printf(NEGRITO);
@@ -47,8 +47,7 @@ void imprimirMenuPrincipal()
     printf(CONVENCIONAL);
 }
 
-// imprimirMenuPrincipal() → Imprime todas funções disponíveis no programa. Não retorna nada.
-
+// Recolhe os dados necessários para criação da conta as escreve no arquivo "Contas.bin" de forma binária. Não retorna nada.
 void criarConta()
 {
     Conta C;
@@ -69,7 +68,7 @@ void criarConta()
     adicionarIndices(C.idConta,ftell(Dados));
 
     fwrite(&C.idConta, sizeof(int),1,Dados);
-    fwrite(&C.nomePessoa,sizeof(char),33,Dados);
+    fwrite(criptografiaXOR(C.nomePessoa),sizeof(char),33,Dados);
     fwrite(&C.CPF,sizeof(char),12,Dados);
     fwrite(&C.cidade,sizeof(char),31,Dados);
     fwrite(&C.saldo,sizeof(float),1,Dados);
@@ -80,9 +79,7 @@ void criarConta()
     fclose(Dados);
 }
 
-// criarConta() → Recolhe os dados necessários para criação da conta as escreve no arquivo
-// "Contas.bin" de forma binária. Não retorna nada.
-
+// Imprime em formato de lista todas as contas registradas no arquivo "Contas.bin". Não retorna nada.
 void imprimirContas()
 {
     FILE *Dados = fopen("Contas.bin", "rb");
@@ -105,19 +102,16 @@ void imprimirContas()
             fread(&C.transferenciasRealizadas,sizeof(int),1,Dados) != 0
         )
         {
-            if(C.idConta >= 0) { printf("\n\t┃ %-5d ┃ %-31s ┃ %-12s ┃ %-31s ┃ %-12.2f ┃ %-7u ┃", C.idConta, C.nomePessoa, C.CPF,C.cidade, C.saldo,C.transferenciasRealizadas); }
+            if(C.idConta >= 0) { printf("\n\t┃ %-5d ┃ %-31s ┃ %-12s ┃ %-31s ┃ %-12.2f ┃ %-7u ┃", C.idConta, criptografiaXOR(C.nomePessoa), C.CPF,C.cidade, C.saldo,C.transferenciasRealizadas); }
         }
         printf("\n\t┗━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━┛\n\n");
         printf(CONVENCIONAL);
         fclose(Dados);
     }
-    else
-    { printf("\n\t⨂ Arquivo não encontrada.\n"); }
+    else{ printf("\n\t⨂ Arquivo não encontrada.\n"); }
 }
 
-// imprimirContas() → Imprime em formato de lista todas as contas registradas no arquivo "Contas.bin".
-// Não retorna nada.
-
+// Busca no arquivo "Contas.bin" a conta diretamente pelo ID informado, porém não mais utilizado devido as demandas da segunda parte do projeto (Consultar: https://pucminas.instructure.com/courses/88639/files/5866512?module_item_id=2279453). Retorna a posição do registro no arquivo de contas.
 int buscaContaTradicional(int id)
 {
     Conta C;
@@ -143,17 +137,13 @@ int buscaContaTradicional(int id)
     return posicaoCursor;
 }
 
-// buscaContaTradicional(int id) → Busca no arquivo "Contas.bin" a conta diretamente pelo ID informado, porém
-// não mais utilizado devido as demandas da segunda parte do projeto
-// (Consultar: https://pucminas.instructure.com/courses/88639/files/5866512?module_item_id=2279453).
-// Retorna a posição do registro no arquivo de contas.
-
+// Função para adicionar novos fundos a conta registrada (caso a encontre) no arquivo, recolhe o valor a adicionar e soma ao valor atual registrado. Não retorna nada.
 void depositar()
 {
     printf(NEGRITO);
-    printf("\n\t┏━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃  ≙ Depositar    ┃");
-    printf("\n\t┗━━━━━━━━━━━━━━━━━┛\n");
+    printf("\n\t┏━━━━━━━━━━━━━┓");
+    printf("\n\t┃  Depositar  ┃");
+    printf("\n\t┗━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
     printf("\n\tDigite o ID da conta desejada: "); int idTemporario = 0; scanf("%d", &idTemporario);
@@ -186,15 +176,13 @@ void depositar()
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
 
-// depositar() → Função para adicionar novos fundos a conta registrada (caso a encontre) no arquivo,
-// recolhe o valor a adicionar e soma ao valor atual registrado. Não retorna nada.
-
+// Função para atualizar os dados a conta registrada (caso a encontre) no arquivo, recolhe novamente os dados necessários. Não retorna nada. Fora comentada a função que cria arquivo de 'CidadesLI' para facilitar no gerenciamento do projeto, no entanto, não apenas é possível adicionar outros campos, mas os métodos referentes as listas permitem que coloque qualquer caminho/arquivo de sua preferência.
 void atualizarConta()
 {
     printf(NEGRITO);
-    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃  ≛ Atualizar Conta    ┃");
-    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+    printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━┓");
+    printf("\n\t┃  Atualizar Conta    ┃");
+    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
     printf("\n\tDigite o ID da conta desejada: ");
@@ -218,11 +206,11 @@ void atualizarConta()
             fseek(Dados,(posicao) + sizeof(int),SEEK_SET);
             Conta C;
 
-            printf("\n\tNome: "); fgets(C.nomePessoa,sizeof(C.nomePessoa),stdin); C.nomePessoa[strcspn(C.nomePessoa, "\n")] = 0;
-            printf("\n\tCPF: "); fgets(C.CPF,sizeof(C.CPF),stdin); C.CPF[strcspn(C.CPF, "\n")] = 0;
-            printf("\n\tCidade: "); fgets(C.cidade,sizeof(C.cidade),stdin); C.cidade[strcspn(C.cidade, "\n")] = 0;
+            printf("\n\tNome: ");   fgets(C.nomePessoa,sizeof(C.nomePessoa),stdin); C.nomePessoa[strcspn(C.nomePessoa, "\n")] = 0;
+            printf("\n\tCPF: ");    fgets(C.CPF,sizeof(C.CPF),stdin);               C.CPF[strcspn(C.CPF, "\n")] = 0;
+            printf("\n\tCidade: "); fgets(C.cidade,sizeof(C.cidade),stdin);         C.cidade[strcspn(C.cidade, "\n")] = 0;
 
-            fwrite(&C.nomePessoa,sizeof(char),33,Dados);
+            fwrite(criptografiaXOR(C.nomePessoa),sizeof(char),33,Dados);
             fwrite(&C.CPF,sizeof(char),12,Dados);
             fwrite(&C.cidade,sizeof(char),31,Dados);
 
@@ -234,12 +222,7 @@ void atualizarConta()
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
 
-// atualizarConta() → Função para atualizar os dados a conta registrada (caso a encontre) no arquivo,
-// recolhe novamente os dados necessários. Não retorna nada.
-// OBS: Fora comentada a função que cria arquivo de 'CidadesLI' para facilitar no gerenciamento do projeto, no entanto,
-// não apenas é possível adicionar outros campos, mas os métodos referentes as listas permitem que coloque qualquer caminho
-// / arquivo de sua preferência.
-
+// Função para sacar valores da conta registrada (caso a encontre) no arquivo, possibilita a operação somente se o valor for inferior ou igual ao atual saldo. Não retorna nada.
 void sacar()
 {
     printf(NEGRITO);
@@ -283,9 +266,7 @@ void sacar()
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
 
-// sacar() → Função para sacar valores da conta registrada (caso a encontre) no arquivo,
-// possibilita a operação somente se o valor for inferior ou igual ao atual saldo. Não retorna nada.
-
+// Função para transferir valores de contas registradas (caso as encontre) no arquivo, possibilita a operação somente se o valor for inferior ou igual ao atual saldo da conta remetente, além disso há um incremento no atributo 'transferenciasRealizadas'. Não retorna nada.
 void realizarTransferencia()
 {
     printf(NEGRITO);
@@ -348,10 +329,7 @@ void realizarTransferencia()
     else { printf("\n\t⨂ Uma ou ambas as contas não encontradas no sistema.\n"); }
 }
 
-// realizarTransferencia() → Função para transferir valores de contas registradas (caso as encontre) no
-// arquivo, possibilita a operação somente se o valor for inferior ou igual ao atual saldo da conta
-// remetente, além disso há um incremento no atributo 'transferenciasRealizadas'. Não retorna nada.
-
+// Função que remove uma conta desejada (caso a encontre) no arquivo, diferentemente que o nome sugere, o registro não é removido do arquivo, é sobrescrito, de forma que o ID é passado para negativo, os campos são modificados para 'Removida' e saldo e número de transferências realizadas é zerado, isso de forma que tenha auditoria de quais contas foram removidas do sistema, vale ressaltar que não é possível reutilizar ou atualizar contas removidas. Não retorna nada.
 void deletarConta()
 {
     printf(NEGRITO);
@@ -401,13 +379,7 @@ void deletarConta()
     else { printf("\n\t⨂ Conta não encontrada no sistema.\n"); }
 }
 
-// deletarConta() → Função que remove uma conta desejada (caso a encontre) no arquivo,
-// diferentemente que o nome sugere, o registro não é removido do arquivo, é sobrescrito,
-// de forma que o ID é passado para negativo, os campos são modificados para 'Removida' e
-// saldo e número de transferências realizadas é zerado, isso de forma que tenha auditoria
-// de quais contas foram removidas do sistema, vale ressaltar que não é possível reutilizar
-// ou atualizar contas removidas. Não retorna nada.
-
+// Função para adicionar os IDs e as respectivas posições dos registros no arquivo de contas original em um novo arquivo, denominado 'Indices.bin', para fins de estudo e melhor compreensão, operações realizadas no arquivo de índice imprimem o símbolo: 🄸. Não retorna nada.
 void adicionarIndices(int id, long posicaoNoArquivo)
 {
     FILE *Indices = fopen("Indices.bin","ab");
@@ -421,11 +393,7 @@ void adicionarIndices(int id, long posicaoNoArquivo)
     else { printf("\n\t🄸 Arquivo de índices não encontrado.\n"); }
 }
 
-// adicionarIndices(int id, long posicaoNoArquivo) → Função para adicionar os IDs e as respectivas posições
-// dos registros no arquivo de contas original em um novo arquivo, denominado 'Indices.bin', para fins de
-// estudo e melhor compreensão, operações realizadas no arquivo de índice imprimem o símbolo: 🄸. Não retorna
-// nada.
-
+// Da mesma maneira que a função deletarConta(), converte o respectivo ID para negativo no entanto a posição do registro no arquivo principal permanece o mesmo para auditoria. Não retorna nada.
 void removerIndice(int ID)
 {
     FILE *Indices = fopen("Indices.bin","rb+");
@@ -450,10 +418,7 @@ void removerIndice(int ID)
     else { printf("\n\t🄸 Arquivo de índices não encontrado.\n"); }
 }
 
-// void removerIndice(int ID) → Da mesma maneira que a função deletarConta(), converte o respectivo ID
-// para negativo no entanto a posição do registro no arquivo principal permanece o mesmo para auditoria.
-// Não retorna nada.
-
+// Método de busca pelas contas no arquivo de Índices conforme exigências da segunda parte do projeto (Consultar: https://pucminas.instructure.com/courses/88639/files/5866512?module_item_id=2279453), há ganhos de performance em relação a primeira versão por dividir as operações. Retorna a posição do registro no arquivo principal e a partir desta e da função nativa de C 'fseek' posiciona o cursor no arquivo para a leitura.
 int buscaBinariaPorID(int ID)
 {
     int posicaoCursor = -1;
@@ -502,11 +467,7 @@ int buscaBinariaPorID(int ID)
     return posicaoCursor;
 }
 
-// buscaBinariaPorID(int ID) → Método de busca pelas contas no arquivo de Índices conforme exigências
-// da segunda parte do projeto (Consultar: https://pucminas.instructure.com/courses/88639/files/5866512?module_item_id=2279453),
-// há ganhos de performance em relação a primeira versão por dividir as operações. Retorna a posição do registro
-// no arquivo principal e a partir desta e da função nativa de C 'fseek' posiciona o cursor no arquivo para a leitura.
-
+// Busca a conta por ID como demais funções porém imprime os dados da conta de forma mais detalhada ao usuário pelo método imprimirConta(Conta C). Não retorna nada.
 void buscaAvulsa()
 {
     printf(NEGRITO);
@@ -542,7 +503,7 @@ void buscaAvulsa()
                     fseek(Dados,posicao,SEEK_SET);
                     Conta C;
                     fread(&C.idConta, sizeof(int),1,Dados);
-                    fread(&C.nomePessoa,sizeof(char),33,Dados);
+                    fread(criptografiaXOR(C.nomePessoa),sizeof(char),33,Dados);
                     fread(&C.CPF,sizeof(char),12,Dados);
                     fread(&C.cidade,sizeof(char),31,Dados);
                     fread(&C.saldo,sizeof(float),1,Dados);
@@ -568,9 +529,7 @@ void buscaAvulsa()
     }
 }
 
-// buscaAvulsa() → Busca a conta por ID como demais funções porém imprime os dados da conta de forma
-// mais detalhada ao usuário pelo método imprimirConta(Conta C). Não retorna nada.
-
+// Verifica se o arquivo a ser lido está de fato vazio, a lógica é bastante simples, onde o documento é lido de modo 'ab', ou seja, o cursor se inicia no final, caso este seja 0, logo está vazio. Retorna a 1 se está vazio e 0 o contrário.
 int verificarListaInvertida(char *origemArquivo)
 {
     int arquivoEstaVazio = 1;
@@ -582,10 +541,7 @@ int verificarListaInvertida(char *origemArquivo)
     return arquivoEstaVazio;
 }
 
-// verificarListaInvertida(char *origemArquivo) → Verifica se o arquivo a ser lido está de fato vazio, a lógica é bastante simples,
-// onde o documento é lido de modo 'ab', ou seja, o cursor se inicia no final, caso este seja 0, logo está vazio. Retorna a 1 se está
-// vazio e 0 o contrário.
-
+// Busca pelo arquivo desejado se a string informada já fora registrada anteriormente através da função 'strstr' do C, fora escolhida ela ao invés do 'strcmp' para aumentar as chances de encontrar a conta desejada. Retorna a posição do cursor no arquivo caso encontre o registro, -1 caso não seja encontrada.
 long buscarPosicaoListaInvertida(char *info,FILE *arquivo)
 {
     long posicao = -1;
@@ -593,7 +549,7 @@ long buscarPosicaoListaInvertida(char *info,FILE *arquivo)
     int idsTemporarios[10] = {0,0,0,0,0,0,0,0,0,0};
     fseek(arquivo,0,SEEK_SET);
 
-    while(fread(idsTemporarios,sizeof(int),10,arquivo) != 0 && fread(infoTemporaria,sizeof(char),31,arquivo) != 0)
+    while(fread(idsTemporarios,sizeof(int),10,arquivo) != 0 && fread(criptografiaXOR(infoTemporaria),sizeof(char),31,arquivo) != 0)
     {
         if(strstr(infoTemporaria,info) != NULL) { posicao = ftell(arquivo); }
     }
@@ -601,10 +557,7 @@ long buscarPosicaoListaInvertida(char *info,FILE *arquivo)
     return posicao;
 }
 
-// buscarPosicaoListaInvertida(char *info,FILE *arquivo) → Busca pelo arquivo desejado se a string informada já fora registrada anteriormente
-// através da função 'strstr' do C, fora escolhida ela ao invés do 'strcmp' para aumentar as chances de encontrar a conta desejada. Retorna a
-// posição do cursor no arquivo caso encontre o registro, -1 caso não seja encontrada.
-
+// Adiciona os novos termos da Conta criada no arquivo de listas invertidas preferencial do usuário (seja nome ou cidade), onde o métedo "quebra" a string em partes delimitadas por um espaço em branco e verifica se essa substring já consta no documento, caso não é criado um vetor de 10 inteiros para cada nova string. Este vetor inclusive que sua última casa '9' direciona onde será escrito os novos IDs, no entanto se já consta, escreve na próxima casa utilizando o "apontador". Não retorna nada.
 void adicionarDadosListaInvertida(int id,char *info,char *origemArquivo)
 {
     if(verificarListaInvertida(origemArquivo) == 1)
@@ -666,11 +619,7 @@ void adicionarDadosListaInvertida(int id,char *info,char *origemArquivo)
     }
 }
 
-// adicionarDadosListaInvertida(int id,char *info,char *origemArquivo) → Adiciona os novos termos da Conta criada no arquivo de listas invertidas
-// preferencial do usuário (seja nome ou cidade), onde o métedo "quebra" a string em partes delimitadas por um espaço em branco e verifica se essa
-// substring já consta no documento, caso não é criado um vetor de 10 inteiros para cada nova string. Este vetor inclusive que sua última casa '9'
-// direciona onde será escrito os novos IDs, no entanto se já consta, escreve na próxima casa utilizando o "apontador". Não retorna nada.
-
+// Informa ao usuário quais contas foram encontradas a partir do dado informado, seja pelo nome ou pela cidade. Não retorna nada.
 void buscarDadosListaInvertida(char *info,char *origemArquivo)
 {
     if(verificarListaInvertida(origemArquivo) == 0)
@@ -686,14 +635,14 @@ void buscarDadosListaInvertida(char *info,char *origemArquivo)
                 int idsTemporarios[10] = {0,0,0,0,0,0,0,0,0,0};
                 fread(idsTemporarios,sizeof(int),10,ListaInvertida);
 
-                printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━┓");
-                printf("\n\t┃ ☘ IDs Correspondentes ┃");
-                printf("\n\t┣━━━━━━━━━━━━━━━━━━━━━━━┫");
+                printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━┓");
+                printf("\n\t┃ IDs Correspondentes ┃");
+                printf("\n\t┣━━━━━━━━━━━━━━━━━━━━━┫");
                 for(int i = 0; i < 9; i++)
                 {
-                    if(idsTemporarios[i] > 0) { printf("\n\t┃ %-21d ┃",idsTemporarios[i]); }
+                    if(idsTemporarios[i] > 0) { printf("\n\t┃ %-19d ┃",idsTemporarios[i]); }
                 }
-                printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+                printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━┛\n");
             }
             else{ printf("\n\t₪ Nenhuma ID associada a esta informação.\n"); }
             fclose(ListaInvertida);
@@ -703,9 +652,7 @@ void buscarDadosListaInvertida(char *info,char *origemArquivo)
     else { printf("\n\t₪ Não constam contas registradas no arquivo."); }
 }
 
-// buscarDadosListaInvertida(char *info,char *origemArquivo) → Informa ao usuário quais contas foram encontradas a partir do dado informado, seja
-// pelo nome ou pela cidade. Não retorna nada.
-
+// Este método remove no arquivo o ID da conta excluída nas ocasiões onde foram registradas esta conta, de forma que zera a posição onde se encontrava e diminui por 1 nossa casa "apontadora", de forma que caso exita uma situação onde iria aparecer novamente a informação, possa ser escrita sem prejudicar a pesquisa.
 void removerDadosListaInvertida(int id,char *origemArquivo)
 {
     FILE *ListaInvertida = fopen("NomesLI.bin","rb+");
@@ -733,10 +680,7 @@ void removerDadosListaInvertida(int id,char *origemArquivo)
     else { printf("\n\t₪ Erro, arquivo indisponível."); }
 }
 
-// removerDadosListaInvertida(int id,char *origemArquivo) → Este método remove no arquivo o ID da conta excluída nas ocasiões onde foram registradas
-// esta conta, de forma que zera a posição onde se encontrava e diminui por 1 nossa casa "apontadora", de forma que caso exita uma situação onde
-// iria aparecer novamente a informação, possa ser escrita sem prejudicar a pesquisa.
-
+// Da mesma maneira que os métodos de remoção e adição, este remove resquícios das antigas informações no arquivo e escreve as novas, de maneira que não tenha conflitos de dados.
 void atualizarDadosListaInvertida(int id,char *infoOriginal, char *infoNova,char *origemArquivo)
 {
     if(verificarListaInvertida(origemArquivo) == 0)
@@ -774,5 +718,68 @@ void atualizarDadosListaInvertida(int id,char *infoOriginal, char *infoNova,char
     else { printf("\n\t₪ Não constam contas registradas no arquivo."); }
 }
 
-// atualizarDadosListaInvertida(int id,char *infoOriginal, char *infoNova,char *origemArquivo) → Da mesma maneira que os métodos de remoção e
-// adição, este remove resquícios das antigas informações no arquivo e escreve as novas, de maneira que não tenha conflitos de dados.
+// Função para criptografar e descriptografar os dados dos usuários no arquivo "Contas.bin", a criptografia criptografiaXOR é bastante simples de ser implementada e dificilmente é quebrada. Retorna a String com os caracteres modificados.
+char *criptografiaXOR(char *nomePessoa)
+{
+    char chave = 'X';
+    int tamanhoNome = strlen(nomePessoa);
+
+    for(int i = 0; i < tamanhoNome; i++) { nomePessoa[i] ^= chave; }
+
+    return nomePessoa;
+}
+
+// static void comprimir()
+// {
+//     FILE *Dados = fopen("Contas.bin", "rb");
+//     if(Dados != NULL)
+//     {
+//         FILE *DadosComprimidos = fopen("ContasX.bin", "wb");
+//         if(DadosComprimidos != NULL)
+//         {
+//             unsigned int bitRestante  = 0;
+//             unsigned int byteRestante = 0;
+//             int proximoByte = fgetc(Dados);
+//             u_int16_t noAtual = proximoByte;
+//             unsigned int tamanhoDicionario = 256;
+//             NoDicionario *dicionario = calloc(MAXIMO_BITS_DICIONARIO, sizeof(NoDicionario));
+//
+//             if(proximoByte == EOF) { return; }
+//             if(dicionario == NULL) { printf("\n\tErro, não foi possível alocar memória suficiente para o dicionário.\n"); return; }
+//
+//             do
+//             {
+//                 int byteAtual = fgetc(Dados);
+//
+//                 if(byteAtual == EOF)
+//                 {
+//                     break;
+//                 }
+//
+//                 u_int16_t proximoNo = dicionario[noAtual].folha[byteAtual];
+//
+//                 if(proximoNo != 0)
+//                 {
+//                     noAtual = proximoNo;
+//                     continue;
+//                 }
+//
+//                 if(bitRestante == 0)
+//                 {
+//                 }
+//                 else
+//                 {
+//                     fputc(byteRestante | (noAtual >> 8),DadosComprimidos);
+//                     fputc(noAtual, DadosComprimidos);
+//                     bitRestante = 0;
+//                 }
+//             }
+//             while();
+//
+//             fclose(DadosComprimidos);
+//         }
+//         else { printf("\n\t⍍ Arquivo indisponível para escrita.\n"); }
+//         fclose(Dados);
+//     }
+//     else { printf("\n\t⍍ Arquivo indisponível para leitura.\n"); }
+// }

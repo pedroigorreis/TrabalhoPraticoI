@@ -6,11 +6,12 @@
 #ifndef BIBLIOTECAS_H
 #define BIBLIOTECAS_H
 
+// Bibliotecas necessárias para o funcionamento do programa.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// Bibliotecas necessárias para o funcionamento do programa.
 
+// Definição de cores e estilo de escrita para impressão.
 #define AZUL            "\033[0;34m"
 #define ROSA            "\033[0;35m"
 #define PRETO           "\033[0;30m"
@@ -21,8 +22,8 @@
 #define VERMELHO        "\033[0;31m"
 #define NEGRITO         "\033[1m"
 #define CONVENCIONAL    "\033[22m"
-// Definição de cores e estilo de escrita para impresssão.
 
+// Estrutura conta para gerenciamento.
 typedef struct Conta
 {
     int idConta;
@@ -33,7 +34,15 @@ typedef struct Conta
     unsigned int transferenciasRealizadas;
 }
 Conta;
-// Estrutura conta para gerenciamento.
+
+#define BITS_DICIONARIO         12
+#define MAXIMO_BITS_DICIONARIO  (1 << BITS_DICIONARIO)
+
+typedef struct NoDicionario
+{
+    u_int16_t folha[256];
+}
+NoDicionario;
 
 void imprimirContas();
 void imprimirConta(Conta C);
@@ -46,17 +55,21 @@ void buscaAvulsa();
 void deletarConta();
 void atualizarConta();
 void realizarTransferencia();
-int buscarContaTradicional(int id);
+int  buscarContaTradicional(int id);
 
 void removerIndice(int id);
-int buscaBinariaPorID(int ID);
+int  buscaBinariaPorID(int ID);
 void adicionarIndices(int id, long posicaoNoArquivo);
 
-int verificarListaInvertida(char *origemArquivo);
+int  verificarListaInvertida(char *origemArquivo);
 long buscarPosicaoListaInvertida(char *info,FILE *arquivo);
 void removerDadosListaInvertida(int id,char *origemArquivo);
 void buscarDadosListaInvertida(char *info,char *origemArquivo);
 void adicionarDadosListaInvertida(int id,char *info,char *origemArquivo);
 void atualizarDadosListaInvertida(int id,char *infoOriginal, char *infoNova,char *origemArquivo);
+
+char *criptografiaXOR(char *nomePessoa);
+
+static void comprimir();
 
 #endif

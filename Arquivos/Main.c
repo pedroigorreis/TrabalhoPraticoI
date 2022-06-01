@@ -5,6 +5,7 @@
 
 #include "Bibliotecas.h"
 
+// Apenas imprime o menu principal e redireciona o usuário para a função requisitada, retorna 0.
 int main(void)
 {
     int inst = -1;
@@ -27,13 +28,11 @@ int main(void)
             case 5: { system("clear"); printf(AMARELO);  imprimirContas();        break; }
             case 7: { system("clear"); printf(VERDE);    depositar();             break; }
             case 8: { system("clear"); printf(VERDE);    sacar();                 break; }
-            case 9: { break; }
-            default:{ system("clear"); printf("\n\t⦰ Erro, opção inválida.\n");           break; }
+            case 9: {                                                             break; }
+            default:{ system("clear"); printf("\n\t Erro, opção inválida.\n");    break; }
         }
         printf(BRANCO);
     }
     while(inst != 9);
     return 0;
 }
-
-// main - Apenas imprime o menu principal e redirenciona o usuário para a função requisitada, retorna 0.
