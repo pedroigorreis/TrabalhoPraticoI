@@ -10,16 +10,16 @@ void imprimirConta(Conta C)
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃                     ⋑ Sua Conta ⋐                    ┃");
+    printf("\n\t┃                   Detalhes da conta                  ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
     printf(CONVENCIONAL);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃ ☘ ID: %-5d                                          ┃", C.idConta);
-    printf("\n\t┃ ☺ Nome: %-31s              ┃", criptografiaXOR(C.nomePessoa));
-    printf("\n\t┃ ♮ CPF: %-12s                                  ┃", C.CPF);
-    printf("\n\t┃ ⚐ Cidade registrada: %-31s ┃", C.cidade);
-    printf("\n\t┃ ₤ Saldo disponível: %-9.2f                        ┃", C.saldo);
-    printf("\n\t┃ ⛖ Transferências: %-u                                  ┃", C.transferenciasRealizadas);
+    printf("\n\t┃ ◌ ID: %-5d                                          ┃",    C.idConta);
+    printf("\n\t┃ ◌ Nome: %-31s              ┃",                             C.nomePessoa);
+    printf("\n\t┃ ◌ CPF: %-12s                                  ┃",          C.CPF);
+    printf("\n\t┃ ◌ Cidade registrada: %-31s ┃",                             C.cidade);
+    printf("\n\t┃ ◌ Saldo disponível: %-9.2f                        ┃",      C.saldo);
+    printf("\n\t┃ ◌ Transferências: %-2u                                 ┃", C.transferenciasRealizadas);
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
 }
 
@@ -29,7 +29,7 @@ void imprimirMenuPrincipal()
     printf(NEGRITO);
     printf("\n");
     printf("\t┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓\n");
-    printf("\t┃    No bolso!    ┃ ⦛ Administrador ⦛   ┃\n");
+    printf("\t┃    No bolso!    ┃ Modo Administrador  ┃\n");
     printf("\t┣━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━┫\n");
     printf("\t┃       » Escolha uma das opções «      ┃\n");
     printf("\t┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\n");
@@ -53,30 +53,36 @@ void criarConta()
     Conta C;
     FILE *Dados = fopen("Contas.bin", "ab");
 
-    printf("\n\t┏━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃  ≗ Criar conta    ┃");
-    printf("\n\t┗━━━━━━━━━━━━━━━━━━━┛\n");
+    if(Dados != NULL)
+    {
+        printf("\n\t┏━━━━━━━━━━━━━━━━━━━┓");
+        printf("\n\t┃    Criar conta    ┃");
+        printf("\n\t┗━━━━━━━━━━━━━━━━━━━┛\n");
 
-    printf("\n\tNome: "); fgets(C.nomePessoa,sizeof(C.nomePessoa),stdin); C.nomePessoa[strcspn(C.nomePessoa, "\n")] = 0;
-    printf("\n\tCPF: "); fgets(C.CPF,sizeof(C.CPF),stdin); C.CPF[strcspn(C.CPF, "\n")] = 0;
-    printf("\n\tCidade: "); fgets(C.cidade,sizeof(C.cidade),stdin); C.cidade[strcspn(C.cidade, "\n")] = 0;
+        printf("\n\tNome: ");   fgets(C.nomePessoa,sizeof(C.nomePessoa),stdin); C.nomePessoa[strcspn(C.nomePessoa, "\n")] = 0;
+        printf("\n\tCPF: ");    fgets(C.CPF,sizeof(C.CPF),stdin);               C.CPF[strcspn(C.CPF, "\n")] = 0;
+        printf("\n\tCidade: "); fgets(C.cidade,sizeof(C.cidade),stdin);         C.cidade[strcspn(C.cidade, "\n")] = 0;
 
-    C.saldo = 0.0;
-    C.idConta = (ftell(Dados) / 88) + 1;
-    C.transferenciasRealizadas = 0;
+        C.saldo = 0.0;
+        C.idConta = (ftell(Dados) / 88) + 1;
+        C.transferenciasRealizadas = 0;
 
-    adicionarIndices(C.idConta,ftell(Dados));
+        adicionarIndices(C.idConta,ftell(Dados));
 
-    fwrite(&C.idConta, sizeof(int),1,Dados);
-    fwrite(criptografiaXOR(C.nomePessoa),sizeof(char),33,Dados);
-    fwrite(&C.CPF,sizeof(char),12,Dados);
-    fwrite(&C.cidade,sizeof(char),31,Dados);
-    fwrite(&C.saldo,sizeof(float),1,Dados);
-    fwrite(&C.transferenciasRealizadas,sizeof(int),1,Dados);
+        criptografiaXOR(C.nomePessoa);
 
-    imprimirConta(C);
-    adicionarDadosListaInvertida(C.idConta,C.nomePessoa,"NomesLI.bin");
-    fclose(Dados);
+        fwrite(&C.idConta, sizeof(int),1,Dados);
+        fwrite(&C.nomePessoa,sizeof(char),33,Dados);
+        fwrite(&C.CPF,sizeof(char),12,Dados);
+        fwrite(&C.cidade,sizeof(char),31,Dados);
+        fwrite(&C.saldo,sizeof(float),1,Dados);
+        fwrite(&C.transferenciasRealizadas,sizeof(int),1,Dados);
+
+        criptografiaXOR(C.nomePessoa);
+        adicionarDadosListaInvertida(C.idConta,C.nomePessoa,"NomesLI.bin");
+        fclose(Dados);
+    }
+    else { printf("Erro, arquivo inacessível para criação da conta.\n"); }
 }
 
 // Imprime em formato de lista todas as contas registradas no arquivo "Contas.bin". Não retorna nada.
@@ -102,7 +108,10 @@ void imprimirContas()
             fread(&C.transferenciasRealizadas,sizeof(int),1,Dados) != 0
         )
         {
-            if(C.idConta >= 0) { printf("\n\t┃ %-5d ┃ %-31s ┃ %-12s ┃ %-31s ┃ %-12.2f ┃ %-7u ┃", C.idConta, criptografiaXOR(C.nomePessoa), C.CPF,C.cidade, C.saldo,C.transferenciasRealizadas); }
+            if(C.idConta >= 0)
+            {
+                criptografiaXOR(C.nomePessoa);
+                printf("\n\t┃ %-5d ┃ %-31s ┃ %-12s ┃ %-31s ┃ %-12.2f ┃ %-7u ┃", C.idConta, C.nomePessoa, C.CPF,C.cidade, C.saldo,C.transferenciasRealizadas); }
         }
         printf("\n\t┗━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━┛\n\n");
         printf(CONVENCIONAL);
@@ -210,11 +219,13 @@ void atualizarConta()
             printf("\n\tCPF: ");    fgets(C.CPF,sizeof(C.CPF),stdin);               C.CPF[strcspn(C.CPF, "\n")] = 0;
             printf("\n\tCidade: "); fgets(C.cidade,sizeof(C.cidade),stdin);         C.cidade[strcspn(C.cidade, "\n")] = 0;
 
-            fwrite(criptografiaXOR(C.nomePessoa),sizeof(char),33,Dados);
+            atualizarDadosListaInvertida(idTemporario,antigoNomePessoa,C.nomePessoa,"NomesLI.bin");
+            criptografiaXOR(C.nomePessoa);
+
+            fwrite(&C.nomePessoa,sizeof(char),33,Dados);
             fwrite(&C.CPF,sizeof(char),12,Dados);
             fwrite(&C.cidade,sizeof(char),31,Dados);
 
-            atualizarDadosListaInvertida(idTemporario,antigoNomePessoa,C.nomePessoa,"NomesLI.bin");
             fclose(Dados);
         }
         else { printf("\n\t⨂ Arquivo não encontrado.\n"); }
@@ -227,7 +238,7 @@ void sacar()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━┓");
-    printf("\n\t┃  ≚ Saque    ┃");
+    printf("\n\t┃    Saque    ┃");
     printf("\n\t┗━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
@@ -271,7 +282,7 @@ void realizarTransferencia()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃  ≘ Realizar transferências    ┃");
+    printf("\n\t┃    Realizar transferências    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
@@ -334,7 +345,7 @@ void deletarConta()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃  ≢ Deletar conta    ┃");
+    printf("\n\t┃    Deletar conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
@@ -472,15 +483,15 @@ void buscaAvulsa()
 {
     printf(NEGRITO);
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃  ⫯ Buscar conta    ┃");
+    printf("\n\t┃    Buscar conta    ┃");
     printf("\n\t┗━━━━━━━━━━━━━━━━━━━━┛\n");
     printf(CONVENCIONAL);
 
     printf("\n\t┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
-    printf("\n\t┃     ⫯  Forma de busca        ┃");
-    printf("\n\t┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫");
-    printf("\n\t┃ 1 - ID | 2 - Nome do usuário ┃");
-    printf("\n\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+    printf("\n\t┃        Forma de busca        ┃");
+    printf("\n\t┣━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┫");
+    printf("\n\t┃ 1 - ID ┃ 2 - Nome do usuário ┃");
+    printf("\n\t┗━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━┛\n");
     int formaDeBusca = 0;
     scanf("%d",&formaDeBusca);
     fgetc(stdin);
@@ -503,12 +514,14 @@ void buscaAvulsa()
                     fseek(Dados,posicao,SEEK_SET);
                     Conta C;
                     fread(&C.idConta, sizeof(int),1,Dados);
-                    fread(criptografiaXOR(C.nomePessoa),sizeof(char),33,Dados);
+                    fread(&C.nomePessoa,sizeof(char),33,Dados);
                     fread(&C.CPF,sizeof(char),12,Dados);
                     fread(&C.cidade,sizeof(char),31,Dados);
                     fread(&C.saldo,sizeof(float),1,Dados);
                     fread(&C.transferenciasRealizadas,sizeof(int),1,Dados);
                     printf(AMARELO);
+
+                    criptografiaXOR(C.nomePessoa);
                     imprimirConta(C);
                     fclose(Dados);
                 }
@@ -521,7 +534,7 @@ void buscaAvulsa()
         {
             printf("\n\tDigite o nome do usuário: ");
 
-            char infoTemporaria[31] = ""; fgets(infoTemporaria,sizeof(infoTemporaria),stdin); infoTemporaria[strcspn(infoTemporaria, "\n")] = 0;
+            char infoTemporaria[31] = " "; fgets(infoTemporaria,sizeof(infoTemporaria),stdin); infoTemporaria[strcspn(infoTemporaria, "\n")] = 0;
 
             buscarDadosListaInvertida(infoTemporaria,"NomesLI.bin");
             break;
@@ -549,7 +562,7 @@ long buscarPosicaoListaInvertida(char *info,FILE *arquivo)
     int idsTemporarios[10] = {0,0,0,0,0,0,0,0,0,0};
     fseek(arquivo,0,SEEK_SET);
 
-    while(fread(idsTemporarios,sizeof(int),10,arquivo) != 0 && fread(criptografiaXOR(infoTemporaria),sizeof(char),31,arquivo) != 0)
+    while(fread(idsTemporarios,sizeof(int),10,arquivo) != 0 && fread(&infoTemporaria,sizeof(char),31,arquivo) != 0)
     {
         if(strstr(infoTemporaria,info) != NULL) { posicao = ftell(arquivo); }
     }
@@ -719,67 +732,211 @@ void atualizarDadosListaInvertida(int id,char *infoOriginal, char *infoNova,char
 }
 
 // Função para criptografar e descriptografar os dados dos usuários no arquivo "Contas.bin", a criptografia criptografiaXOR é bastante simples de ser implementada e dificilmente é quebrada. Retorna a String com os caracteres modificados.
-char *criptografiaXOR(char *nomePessoa)
+void criptografiaXOR(char *stringOriginal)
 {
     char chave = 'X';
-    int tamanhoNome = strlen(nomePessoa);
+    int tamanhoString = strlen(stringOriginal);
 
-    for(int i = 0; i < tamanhoNome; i++) { nomePessoa[i] ^= chave; }
-
-    return nomePessoa;
+    for(int i = 0; i < tamanhoString; i++) { stringOriginal[i] ^= chave; }
 }
 
-// static void comprimir()
-// {
-//     FILE *Dados = fopen("Contas.bin", "rb");
-//     if(Dados != NULL)
-//     {
-//         FILE *DadosComprimidos = fopen("ContasX.bin", "wb");
-//         if(DadosComprimidos != NULL)
-//         {
-//             unsigned int bitRestante  = 0;
-//             unsigned int byteRestante = 0;
-//             int proximoByte = fgetc(Dados);
-//             u_int16_t noAtual = proximoByte;
-//             unsigned int tamanhoDicionario = 256;
-//             NoDicionario *dicionario = calloc(MAXIMO_BITS_DICIONARIO, sizeof(NoDicionario));
-//
-//             if(proximoByte == EOF) { return; }
-//             if(dicionario == NULL) { printf("\n\tErro, não foi possível alocar memória suficiente para o dicionário.\n"); return; }
-//
-//             do
-//             {
-//                 int byteAtual = fgetc(Dados);
-//
-//                 if(byteAtual == EOF)
-//                 {
-//                     break;
-//                 }
-//
-//                 u_int16_t proximoNo = dicionario[noAtual].folha[byteAtual];
-//
-//                 if(proximoNo != 0)
-//                 {
-//                     noAtual = proximoNo;
-//                     continue;
-//                 }
-//
-//                 if(bitRestante == 0)
-//                 {
-//                 }
-//                 else
-//                 {
-//                     fputc(byteRestante | (noAtual >> 8),DadosComprimidos);
-//                     fputc(noAtual, DadosComprimidos);
-//                     bitRestante = 0;
-//                 }
-//             }
-//             while();
-//
-//             fclose(DadosComprimidos);
-//         }
-//         else { printf("\n\t⍍ Arquivo indisponível para escrita.\n"); }
-//         fclose(Dados);
-//     }
-//     else { printf("\n\t⍍ Arquivo indisponível para leitura.\n"); }
-// }
+void inicializarAlocacao(AlocaInformacoes *AI, int tamanho)
+{
+    AI->base = malloc(tamanho);
+    AI->comprimentoSequencia = tamanho;
+    AI->proximaAlocacao = AI->base;
+}
+
+u_int8_t *Alocar(AlocaInformacoes *AI, int comprimento)
+{
+    u_int8_t *R = AI->proximaAlocacao;
+    comprimento = (comprimento + 3) & ~3;
+    AI->proximaAlocacao += comprimento;
+    return R;
+}
+
+int lerProximoCodigo(EstadoDaLeitura *EL)
+{
+    int codigo = 0;
+    int B0 = fgetc(EL->arquivo);
+
+    if(B0 == EOF) { return CODIGO_FIM; }
+    if(EL->bitsRemanecentes == 0)
+    {
+        int B1 = fgetc(EL->arquivo);
+        if(B1 == EOF) { return CODIGO_FIM; }
+        codigo = (B0 << 4) | (B1 >> 4);
+        EL->bitsRemanecentes = 4;
+        EL->codigoRemanecente = (B1 & 0xf) << 8;
+    }
+    else
+    {
+        codigo = EL->codigoRemanecente | B0;
+        EL->bitsRemanecentes = 0;
+    }
+    return codigo;
+}
+
+void compressaoLZW()
+{
+    FILE *Dados = fopen("Contas.bin","rb");
+    if(Dados != NULL)
+    {
+        FILE *DadosComprimidos = fopen("ContasX.bin","wb");
+        if(DadosComprimidos != NULL)
+        {
+            fseek(Dados,0,SEEK_END);
+            if(ftell(Dados) != 0)
+            {
+                fseek(Dados,0,SEEK_SET);
+                int tamanhoDicionario = 256;
+                NoDicionario *ND = calloc(MAXIMO_BITS_DICIONARIO,sizeof(NoDicionario));
+
+                if(ND == NULL) { printf("\n\t◳ Erro ao alocar o dicionário na memória.\n"); }
+
+                else
+                {
+                    int caractere      = 0;
+                    int bitsRestantes  = 0;
+                    int bytesRestantes = 0;
+                    u_int16_t noAtual  = caractere;
+
+                    do
+                    {
+                        int byteAtual = fgetc(Dados);
+                        if(byteAtual == EOF)
+                        {
+                            if(bitsRestantes == 0)
+                            {
+                                fputc(noAtual >> 4, DadosComprimidos);
+                                fputc(noAtual << 4, DadosComprimidos);
+                            }
+                            else
+                            {
+                                fputc(bytesRestantes | (noAtual >> 8), DadosComprimidos);
+                                fputc(noAtual, DadosComprimidos);
+                            }
+                            break;
+                        }
+
+                        u_int16_t proximoNo = ND[noAtual].folha[byteAtual];
+
+                        if(proximoNo != 0) { noAtual = proximoNo; continue; }
+
+                        if (bitsRestantes == 0)
+                        {
+                            fputc(noAtual  >> 4, DadosComprimidos);
+                            bitsRestantes  = 4;
+                            bytesRestantes = (noAtual << 4);
+                        }
+                        else
+                        {
+                            fputc(byteAtual | (noAtual >> 8), DadosComprimidos);
+                            fputc(noAtual, DadosComprimidos);
+                            bitsRestantes = 0;
+                        }
+
+                        if(tamanhoDicionario < MAXIMO_BITS_DICIONARIO)
+                        {
+                            ND[noAtual].folha[byteAtual] = tamanhoDicionario++;
+                        }
+                        else
+                        {
+                            memset(ND,0,MAXIMO_BITS_DICIONARIO*sizeof(ND[0]));
+                            tamanhoDicionario = 256;
+                        }
+
+                        noAtual = byteAtual;
+                    }
+                    while(1);
+                }
+                free(ND);
+
+                printf("\n\t◮ Compressão realizada com sucesso.\n");
+                printf("  \t------------------------------------\n");
+                printf("\n\tTamanho original:   %ld\n",ftell(Dados));
+                printf("\n\tTamanho modificado: %ld\n",ftell(DadosComprimidos));
+            }
+            else { printf("\n\t◮ Erro, arquivo vazio.\n"); }
+            fclose(DadosComprimidos);
+        }
+        else { printf("\n\t◮ Erro, arquivo indisponível para escrita.\n"); }
+        fclose(Dados);
+    }
+    else { printf("\n\t◮ Erro, arquivo indisponível para compressão.\n"); }
+}
+
+void descompressaoLZW()
+{
+    FILE *DadosComprimidos = fopen("ContasX.bin","rb");
+    if(DadosComprimidos != NULL)
+    {
+        FILE *Dados = fopen("ContasAA.bin","wb");
+        if(Dados != NULL)
+        {
+            fseek(DadosComprimidos,0,SEEK_END);
+            if(ftell(DadosComprimidos) != 0)
+            {
+                fseek(DadosComprimidos,0,SEEK_SET);
+
+                AlocaInformacoes AI;
+                int tamanhoDicionario = 256;
+                EstadoDaLeitura EL = { DadosComprimidos, 0, 0 };
+
+                EntradaDicionario *ED = calloc(MAXIMO_BITS_DICIONARIO, sizeof(EntradaDicionario));
+                inicializarAlocacao(&AI,MAXIMO_BITS_DICIONARIO*MAXIMO_BITS_DICIONARIO/2 + MAXIMO_BITS_DICIONARIO*2);
+
+                for(int i = 0; i < tamanhoDicionario; i++)
+                {
+                    ED[i].sequencia = Alocar(&AI,1);
+                    ED[i].sequencia[0] = i;
+                    ED[i].tamanho = 1;
+                }
+
+                u_int8_t *marcador = AI.proximaAlocacao;
+                u_int16_t codigoAnterior = lerProximoCodigo(&EL);
+
+                fputc(codigoAnterior, Dados);
+
+                do
+                {
+                    u_int16_t codigo = lerProximoCodigo(&EL);
+
+                    if(codigo > tamanhoDicionario)
+                    {
+                        if(codigo == CODIGO_FIM) { break; }
+                    }
+                    if(tamanhoDicionario == MAXIMO_BITS_DICIONARIO)
+                    {
+                        tamanhoDicionario = 256;
+                        AI.proximaAlocacao = marcador;
+                    }
+                    else
+                    {
+                        int comprimentoAnterior = ED[codigoAnterior].tamanho;
+                        ED[tamanhoDicionario].tamanho = comprimentoAnterior + 1;
+                        ED[tamanhoDicionario].sequencia = Alocar(&AI, comprimentoAnterior + 1);
+                        memcpy(ED[tamanhoDicionario].sequencia,ED[codigoAnterior].sequencia,comprimentoAnterior);
+
+                        if(codigo == tamanhoDicionario) { ED[tamanhoDicionario++].sequencia[comprimentoAnterior] = ED[codigoAnterior].sequencia[0]; }
+                        else { ED[tamanhoDicionario++].sequencia[comprimentoAnterior] = ED[codigo].sequencia[0]; }
+                    }
+                    fwrite(ED[codigo].sequencia,1,ED[codigo].tamanho,Dados);
+                    codigoAnterior = codigo;
+                }
+                while(1);
+
+                free(ED);
+                free(AI.base);
+
+                printf("\n\t◭ Descompressão realizada com sucesso.\n");
+                printf("  \t---------------------------------------\n");
+            }
+            else { printf("\n\t◭ Erro, arquivo vazio.\n"); }
+            fclose(Dados);
+        }
+        else { printf("\n\t◭ Erro, arquivo indisponível para escrita.\n"); }
+        fclose(DadosComprimidos);
+    }
+    else { printf("\n\t◭ Erro, arquivo indisponível para descompressão.\n"); }
+}

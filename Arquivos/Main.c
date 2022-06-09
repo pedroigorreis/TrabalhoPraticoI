@@ -8,14 +8,14 @@
 // Apenas imprime o menu principal e redireciona o usuário para a função requisitada, retorna 0.
 int main(void)
 {
-    int inst = -1;
+    unsigned int inst = 0;
     system("clear");
 
     do
     {
         printf(BRANCO);
         imprimirMenuPrincipal();
-        scanf("%d",&inst);
+        scanf("%u",&inst);
         fgetc(stdin);
 
         switch(inst)
@@ -30,6 +30,10 @@ int main(void)
             case 8: { system("clear"); printf(VERDE);    sacar();                 break; }
             case 9: {                                                             break; }
             default:{ system("clear"); printf("\n\t Erro, opção inválida.\n");    break; }
+
+            // Protótipos
+            case 10:{ system("clear"); printf(CIANO);    compressaoLZW();         break; }
+            case 11:{ system("clear"); printf(CIANO);    descompressaoLZW();      break; }
         }
         printf(BRANCO);
     }

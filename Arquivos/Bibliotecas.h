@@ -23,6 +23,10 @@
 #define NEGRITO         "\033[1m"
 #define CONVENCIONAL    "\033[22m"
 
+#define BITS_DICIONARIO         12
+#define CODIGO_FIM              0xffff
+#define MAXIMO_BITS_DICIONARIO  (1 << BITS_DICIONARIO)
+
 // Estrutura conta para gerenciamento.
 typedef struct Conta
 {
@@ -35,14 +39,34 @@ typedef struct Conta
 }
 Conta;
 
-#define BITS_DICIONARIO         12
-#define MAXIMO_BITS_DICIONARIO  (1 << BITS_DICIONARIO)
-
 typedef struct NoDicionario
 {
     u_int16_t folha[256];
 }
 NoDicionario;
+
+typedef struct EntradaDicionario
+{
+    int tamanho;
+    u_int8_t *sequencia;
+}
+EntradaDicionario;
+
+typedef struct AlocaInformacoes
+{
+    int comprimentoSequencia;
+    u_int8_t *base;
+    u_int8_t *proximaAlocacao;
+}
+AlocaInformacoes;
+
+typedef struct EstadoDaLeitura
+{
+    FILE *arquivo;
+    int bitsRemanecentes;
+    int codigoRemanecente;
+}
+EstadoDaLeitura;
 
 void imprimirContas();
 void imprimirConta(Conta C);
@@ -68,8 +92,13 @@ void buscarDadosListaInvertida(char *info,char *origemArquivo);
 void adicionarDadosListaInvertida(int id,char *info,char *origemArquivo);
 void atualizarDadosListaInvertida(int id,char *infoOriginal, char *infoNova,char *origemArquivo);
 
-char *criptografiaXOR(char *nomePessoa);
+void criptografiaXOR(char *stringOriginal);
 
-static void comprimir();
+void compressaoLZW();
+void descompressaoLZW();
+int lerProximoCodigo(EstadoDaLeitura *EL);
+u_int8_t *Alocar(AlocaInformacoes *AI, int comprimento);
+void inicializarAlocacao(AlocaInformacoes *AI, int tamanho);
+
 
 #endif
